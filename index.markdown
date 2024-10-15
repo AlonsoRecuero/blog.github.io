@@ -4,7 +4,7 @@ layout: home
 
 # Bienvenido a mi blog
 
-Este es mi nuevo blog sobre desarrollo y tecnología.
+daaaaniiiiiiii
 
 ## Últimos posts
 
