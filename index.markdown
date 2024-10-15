@@ -4,7 +4,7 @@ layout: home
 
 # Bienvenido a mi blog
 
-daaaaniiiiiiii
+daaaaniiiiiiii <3
 
 ## Últimos posts
 
