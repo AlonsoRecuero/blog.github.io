@@ -1,12 +1,7 @@
 ---
 layout: home
+title: Bienvenido a mi blog
 ---
 
-# Bienvenido a mi blog
-
-
-
 ## Últimos posts
-
 Aquí verás los últimos artículos que he publicado.
-
