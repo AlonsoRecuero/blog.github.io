@@ -20,6 +20,27 @@
             color: white;
             padding: 20px;
             text-align: center;
+            position: relative;
+        }
+
+        /* Botón de hamburguesa */
+        .hamburger-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 30px;
+            height: 30px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .hamburger-button div {
+            width: 30px;
+            height: 4px;
+            background-color: white;
+            margin: 6px 0;
         }
 
         /* Estilos para la parte central con los rectángulos */
@@ -45,6 +66,22 @@
             margin: 0;
             font-size: 24px;
             color: #333;
+        }
+
+        /* Botón circular para añadir artículo */
+        .add-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         /* Estilos del footer */
@@ -84,8 +121,13 @@
 </head>
 <body>
 
-    <!-- Header -->
+    <!-- Header con botón de hamburguesa -->
     <header>
+        <button class="hamburger-button">
+            <div></div>
+            <div></div>
+            <div></div>
+        </button>
         <h1>{{ site.title }}</h1>
         <p>{{ site.subtitle }}</p>
     </header>
@@ -104,7 +146,11 @@
             <h2>Artículo 3</h2>
             <p>Este es el tercer artículo destacado en el blog.</p>
         </div>
+        <!-- Aquí se añadirá un cuarto artículo cuando se presione el botón -->
     </div>
+
+    <!-- Botón circular para agregar un nuevo artículo -->
+    <button class="add-button" onclick="addArticle()">+</button>
 
     <!-- Footer fijo con los logotipos -->
     <footer>
@@ -119,6 +165,19 @@
         </div>
     </footer>
 
+    <!-- Script para añadir un nuevo artículo -->
+    <script>
+        function addArticle() {
+            const mainContent = document.querySelector('.main-content');
+            const newArticle = document.createElement('div');
+            newArticle.className = 'rectangle';
+            newArticle.innerHTML = `
+                <h2>Artículo 4</h2>
+                <p>Este es el cuarto artículo que se ha añadido dinámicamente.</p>
+            `;
+            mainContent.appendChild(newArticle);
+        }
+    </script>
+
 </body>
 </html>
-
