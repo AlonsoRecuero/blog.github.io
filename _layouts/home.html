@@ -4,10 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ page.title }}</title>
+    <style>
+        /* Estilos para que los rectángulos ocupen el ancho de la ventana */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .section {
+            width: 100%;
+            padding: 50px 0; /* Controla el tamaño de los rectángulos */
+            color: white;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        /* Diferentes colores para los rectángulos */
+        .section1 {
+            background-color: #3498db; /* Color azul */
+        }
+
+        .section2 {
+            background-color: #2ecc71; /* Color verde */
+        }
+
+        .section3 {
+            background-color: #e74c3c; /* Color rojo */
+        }
+
+        /* Asegura que el contenido esté centrado */
+        .content {
+            max-width: 1200px; /* Controla el ancho máximo del contenido */
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+    </style>
 </head>
 <body>
+
     <header>
-        <h1>{{ site.title1 }}</h1>
+        <h1>{{ site.title }}</h1>
         <nav>
             <ul>
                 <li><a href="{{ site.baseurl }}/">Inicio</a></li>
@@ -15,13 +51,34 @@
             </ul>
         </nav>
     </header>
+
     <main>
-        <h2>{{ page.subtitle }}</h2> <!-- Controla el título principal de la página -->
-        {{ content }} <!-- Aquí se mostrará el contenido de index.markdown -->
+        <!-- Sección 1 -->
+        <div class="section section1">
+            <div class="content">
+                <p>Este es el texto de la sección 1</p>
+            </div>
+        </div>
+
+        <!-- Sección 2 -->
+        <div class="section section2">
+            <div class="content">
+                <p>Este es el texto de la sección 2</p>
+            </div>
+        </div>
+
+        <!-- Sección 3 -->
+        <div class="section section3">
+            <div class="content">
+                <p>Este es el texto de la sección 3</p>
+            </div>
+        </div>
     </main>
+
     <footer>
         <p>Gmail: {{ site.email }}</p>
         <p>Twitter: <a href="https://twitter.com/{{ site.twitter_username }}">{{ site.twitter_username }}</a></p>
     </footer>
+
 </body>
 </html>
