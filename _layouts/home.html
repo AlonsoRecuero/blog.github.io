@@ -3,180 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ site.title }}</title>
+    <title>Blog</title>
+    <link rel="stylesheet" href="/assets/main.css">
     <style>
-        /* Estilos generales */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            padding-bottom: 80px; /* Espacio para no cubrir el contenido con el footer */
         }
-
-        /* Estilo del header */
-        header {
+        .header {
             background-color: #333;
             color: white;
             padding: 20px;
             text-align: center;
             position: relative;
         }
-
-        /* Botón de hamburguesa */
-        .hamburger-button {
+        .menu-btn {
             position: absolute;
-            top: 20px;
+            top: 15px;
             left: 20px;
-            width: 30px;
-            height: 30px;
             background-color: transparent;
             border: none;
+            font-size: 30px;
+            color: white;
             cursor: pointer;
-            z-index: 10;
         }
-
-        .hamburger-button div {
-            width: 30px;
-            height: 4px;
-            background-color: white;
-            margin: 6px 0;
-        }
-
-        /* Estilos para la parte central con los rectángulos */
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 20px 0;
-        }
-
-        .rectangle {
-            width: 100%;
-            max-width: 1200px;
-            background-color: #f4f4f4;
-            margin: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .rectangle h2 {
+        .content {
             margin: 0;
-            font-size: 24px;
-            color: #333;
+            padding: 20px;
         }
-
-        /* Botón circular para añadir artículo */
-        .add-button {
+        .article {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .article-title, .article-content {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        .article-title {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .floating-button {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            background-color: #007bff;
+            bottom: 80px; /* Ajustado para que no se superponga al footer */
+            right: 30px;
+            background-color: #ff4081;
             color: white;
             border: none;
             border-radius: 50%;
-            font-size: 30px;
+            width: 60px;
+            height: 60px;
+            font-size: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
         }
-
-        /* Estilos del footer */
-        footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
+        .footer {
             background-color: #333;
             color: white;
             text-align: center;
-            padding: 10px 0;
+            padding: 20px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
         }
-
-        .footer-content {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-        }
-
-        footer img {
-            vertical-align: middle;
+        .social-icons img {
             width: 30px;
-            height: 30px;
-        }
-
-        footer p {
-            margin: 0;
-        }
-
-        /* Estilos para los enlaces */
-        a {
-            color: white;
-            text-decoration: none;
+            margin: 0 10px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Header con botón de hamburguesa -->
-    <header>
-        <button class="hamburger-button">
-            <div></div>
-            <div></div>
-            <div></div>
-        </button>
-        <h1>{{ site.title }}</h1>
-        <p>{{ site.subtitle }}</p>
-    </header>
-
-    <!-- Contenido principal con los rectángulos -->
-    <div class="main-content">
-        <div class="rectangle">
-            <h2>Artículo 1</h2>
-            <p>Este es el primer artículo destacado en el blog.</p>
-        </div>
-        <div class="rectangle">
-            <h2>Artículo 2</h2>
-            <p>Este es el segundo artículo destacado en el blog.</p>
-        </div>
-        <div class="rectangle">
-            <h2>Artículo 3</h2>
-            <p>Este es el tercer artículo destacado en el blog.</p>
-        </div>
-        <!-- Aquí se añadirá un cuarto artículo cuando se presione el botón -->
+    <div class="header">
+        <button class="menu-btn">&#9776;</button>
+        <h1>Bienvenido a mi blog</h1>
     </div>
 
-    <!-- Botón circular para agregar un nuevo artículo -->
-    <button class="add-button" onclick="addArticle()">+</button>
+    <div class="content">
+        <section id="article-list">
+            <!-- Artículos cargados dinámicamente -->
+        </section>
+    </div>
 
-    <!-- Footer fijo con los logotipos -->
-    <footer>
-        <div class="footer-content">
-            <a href="https://github.com/{{ site.github_username }}" target="_blank">
-                <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="GitHub">
-            </a>
-            <a href="https://twitter.com/{{ site.twitter_username }}" target="_blank">
-                <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter">
-            </a>
-            <p>Gmail: <a href="mailto:{{ site.email }}">{{ site.email }}</a></p>
+    <button id="add-article-btn" class="floating-button">+</button>
+
+    <div class="footer">
+        <p>Contacta conmigo en:</p>
+        <div class="social-icons">
+            <a href="https://github.com/AlonsoRecuero"><img src="/assets/github-logo.png" alt="GitHub"></a>
+            <a href="https://twitter.com/AlonsoRecu"><img src="/assets/twitter-logo.png" alt="Twitter"></a>
         </div>
-    </footer>
+    </div>
 
-    <!-- Script para añadir un nuevo artículo -->
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
+
     <script>
-        function addArticle() {
-            const mainContent = document.querySelector('.main-content');
-            const newArticle = document.createElement('div');
-            newArticle.className = 'rectangle';
-            newArticle.innerHTML = `
-                <h2>Artículo 4</h2>
-                <p>Este es el cuarto artículo que se ha añadido dinámicamente.</p>
-            `;
-            mainContent.appendChild(newArticle);
-        }
+        // Tu configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY",
+            authDomain: "TU_AUTH_DOMAIN",
+            databaseURL: "TU_DATABASE_URL",
+            projectId: "TU_PROJECT_ID",
+            storageBucket: "TU_STORAGE_BUCKET",
+            messagingSenderId: "TU_MESSAGING_SENDER_ID",
+            appId: "TU_APP_ID"
+        };
+
+        // Inicializa Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Guardar nuevo artículo en Firebase
+        document.getElementById('add-article-btn').addEventListener('click', function() {
+            const title = prompt("Escribe el título del artículo:");
+            const content = prompt("Escribe el contenido del artículo:");
+
+            if (title && content) {
+                const newArticleKey = db.ref().child('articles').push().key;
+                db.ref('articles/' + newArticleKey).set({
+                    title: title,
+                    content: content
+                });
+            }
+        });
+
+        // Recuperar artículos guardados de Firebase
+        db.ref('articles').on('value', function(snapshot) {
+            const articleList = document.getElementById('article-list');
+            articleList.innerHTML = ''; // Limpia la lista de artículos
+            snapshot.forEach(function(childSnapshot) {
+                const childData = childSnapshot.val();
+                const article = document.createElement('div');
+                article.classList.add('article');
+                article.innerHTML = `
+                    <input type="text" class="article-title" value="${childData.title}" />
+                    <textarea class="article-content">${childData.content}</textarea>
+                `;
+                articleList.appendChild(article);
+            });
+        });
     </script>
 
 </body>
