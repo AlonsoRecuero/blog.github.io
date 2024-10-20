@@ -3,82 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ page.title }}</title>
+    <title>{{ site.title }}</title>
     <style>
-        /* Estilos para que los rectángulos ocupen el ancho de la ventana */
+        /* Estilos generales */
         body {
-            margin: 0;
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            padding-bottom: 80px; /* Espacio para no cubrir el contenido con el footer */
         }
 
-        .section {
+        /* Estilo del header */
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Estilos para la parte central con los rectángulos */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .rectangle {
             width: 100%;
-            padding: 50px 0; /* Controla el tamaño de los rectángulos */
+            max-width: 1200px;
+            background-color: #f4f4f4;
+            margin: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .rectangle h2 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+
+        /* Estilos del footer */
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #333;
             color: white;
             text-align: center;
-            font-size: 1.5em;
+            padding: 10px 0;
         }
 
-        /* Diferentes colores para los rectángulos */
-        .section1 {
-            background-color: #3498db; /* Color azul */
+        .footer-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
         }
 
-        .section2 {
-            background-color: #2ecc71; /* Color verde */
+        footer img {
+            vertical-align: middle;
+            width: 30px;
+            height: 30px;
         }
 
-        .section3 {
-            background-color: #e74c3c; /* Color rojo */
+        footer p {
+            margin: 0;
         }
 
-        /* Asegura que el contenido esté centrado */
-        .content {
-            max-width: 1200px; /* Controla el ancho máximo del contenido */
-            margin: 0 auto;
-            padding: 0 20px;
+        /* Estilos para los enlaces */
+        a {
+            color: white;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
 
+    <!-- Header -->
     <header>
         <h1>{{ site.title }}</h1>
-        <nav>
-            <ul>
-                <li><a href="{{ site.baseurl }}/">Inicio</a></li>
-                <li><a href="{{ site.baseurl }}/about/">About</a></li>
-            </ul>
-        </nav>
+        <p>{{ site.subtitle }}</p>
     </header>
 
-    <main>
-        <!-- Sección 1 -->
-        <div class="section section1">
-            <div class="content">
-                <p>Este es el texto de la sección 1</p>
-            </div>
+    <!-- Contenido principal con los rectángulos -->
+    <div class="main-content">
+        <div class="rectangle">
+            <h2>Artículo 1</h2>
+            <p>Este es el primer artículo destacado en el blog.</p>
         </div>
-
-        <!-- Sección 2 -->
-        <div class="section section2">
-            <div class="content">
-                <p>Este es el texto de la sección 2</p>
-            </div>
+        <div class="rectangle">
+            <h2>Artículo 2</h2>
+            <p>Este es el segundo artículo destacado en el blog.</p>
         </div>
-
-        <!-- Sección 3 -->
-        <div class="section section3">
-            <div class="content">
-                <p>Este es el texto de la sección 3</p>
-            </div>
+        <div class="rectangle">
+            <h2>Artículo 3</h2>
+            <p>Este es el tercer artículo destacado en el blog.</p>
         </div>
-    </main>
+    </div>
 
+    <!-- Footer fijo con los logotipos -->
     <footer>
-        <p>Gmail: {{ site.email }}</p>
-        <p>Twitter: <a href="https://twitter.com/{{ site.twitter_username }}">{{ site.twitter_username }}</a></p>
+        <div class="footer-content">
+            <a href="https://github.com/{{ site.github_username }}" target="_blank">
+                <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="GitHub">
+            </a>
+            <a href="https://twitter.com/{{ site.twitter_username }}" target="_blank">
+                <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter">
+            </a>
+            <p>Gmail: <a href="mailto:{{ site.email }}">{{ site.email }}</a></p>
+        </div>
     </footer>
 
 </body>
 </html>
+
