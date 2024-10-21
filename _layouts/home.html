@@ -108,22 +108,27 @@
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
 
-    <script>
-        // Tu configuración de Firebase
-        const firebaseConfig = {
-            apiKey: "TU_API_KEY",
-            authDomain: "TU_AUTH_DOMAIN",
-            databaseURL: "TU_DATABASE_URL",
-            projectId: "TU_PROJECT_ID",
-            storageBucket: "TU_STORAGE_BUCKET",
-            messagingSenderId: "TU_MESSAGING_SENDER_ID",
-            appId: "TU_APP_ID"
-        };
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
-        // Inicializa Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyC3yOWMkj_-y4ESMaDr-EEmXvY5Kvpm9nY",
+  authDomain: "blog-b9f88.firebaseapp.com",
+  projectId: "blog-b9f88",
+  storageBucket: "blog-b9f88.appspot.com",
+  messagingSenderId: "961397712722",
+  appId: "1:961397712722:web:d3427481220befc9463c8b",
+  measurementId: "G-EKVXR4Q12M"
+};
 
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
         // Guardar nuevo artículo en Firebase
         document.getElementById('add-article-btn').addEventListener('click', function() {
             const title = prompt("Escribe el título del artículo:");
