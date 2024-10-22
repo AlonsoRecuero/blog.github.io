@@ -102,6 +102,7 @@
             width: 400px;
             text-align: center;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative; /* Para posicionar la "X" */
         }
 
         .modal-content input, .modal-content textarea {
@@ -118,6 +119,18 @@
             border: none;
             cursor: pointer;
             border-radius: 5px;
+        }
+
+        /* Estilos para el botón de cerrar */
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: transparent;
+            border: none;
+            font-size: 20px;
+            color: #333;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -137,6 +150,7 @@
     <!-- Modal para crear nuevo artículo -->
     <div id="article-modal" class="modal">
         <div class="modal-content">
+            <button class="close-btn" id="close-modal-btn">&times;</button>
             <input type="text" id="article-title" placeholder="Título del artículo">
             <textarea id="article-content" rows="5" placeholder="Contenido del artículo"></textarea>
             <button id="save-article-btn">Guardar</button>
@@ -185,12 +199,14 @@
             console.error("Error al conectar a Firebase:", error);
         });
 
-        // Paso 3: Revisa las reglas de seguridad de Firestore
-        // Asegúrate de que las reglas permiten lectura y escritura
-
         // Mostrar el modal al hacer clic en el botón "+"
         document.getElementById('add-article-btn').addEventListener('click', function() {
             document.getElementById('article-modal').style.display = 'flex';
+        });
+
+        // Cerrar el modal al hacer clic en la "X"
+        document.getElementById('close-modal-btn').addEventListener('click', function() {
+            document.getElementById('article-modal').style.display = 'none';
         });
 
         // Guardar nuevo artículo en Firestore
