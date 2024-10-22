@@ -187,18 +187,6 @@
         const app = firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // Paso 1: Verifica la configuración de Firebase
-        // console.log(firebaseConfig); // Revisa si las credenciales son correctas
-
-        // Paso 2: Verifica la conexión de Firebase
-        firebase.firestore().collection('test').get()
-        .then(() => {
-            console.log("Conexión a Firebase exitosa.");
-        })
-        .catch((error) => {
-            console.error("Error al conectar a Firebase:", error);
-        });
-
         // Mostrar el modal al hacer clic en el botón "+"
         document.getElementById('add-article-btn').addEventListener('click', function() {
             document.getElementById('article-modal').style.display = 'flex';
@@ -261,4 +249,4 @@
     </script>
 
 </body>
-</html>
+</html
