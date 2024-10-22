@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog</title>
-    <link rel="stylesheet" href="assets/main.css"> <!-- Enlace al archivo CSS externo -->
+    <link rel="stylesheet" href="/assets/main.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,7 +13,6 @@
             display: flex;
             min-height: 100vh; /* Asegura que el body ocupe al menos toda la altura de la ventana */
         }
-
         .header {
             background-color: #333;
             position: fixed;
@@ -27,7 +26,6 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             z-index: 1; /* Asegura que el header esté por encima de otros elementos */
         }
-
         .menu-btn {
             position: absolute;
             top: 15px;
@@ -38,7 +36,6 @@
             color: white;
             cursor: pointer;
         }
-
         .menu {
             display: none; /* Oculto por defecto */
             position: fixed;
@@ -53,7 +50,6 @@
             padding: 20px;
             box-sizing: border-box;
         }
-
         .close-menu {
             position: absolute;
             top: 15px;
@@ -64,13 +60,11 @@
             cursor: pointer;
             color: #333;
         }
-
         .menu-title {
             font-size: 24px;
             margin-bottom: 20px;
             color: #333;
         }
-
         .menu-item {
             padding: 15px;
             cursor: pointer;
@@ -80,18 +74,15 @@
             border-radius: 5px;
             transition: background-color 0.3s, border-color 0.3s;
         }
-
         .menu-item:hover {
             background-color: #f0f0f0;
             border-color: #ddd;
         }
-
         .content {
             margin-left: 20%; /* Deja espacio para el menú */
             padding: 20px;
             flex: 1; /* Permite que el contenido ocupe el resto del espacio */
         }
-
         .article {
             border: 1px solid #ddd;
             padding: 20px;
@@ -99,19 +90,16 @@
             border-radius: 8px;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
         }
-
         .article-title, .article-content {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
             font-size: 16px;
         }
-
         .article-title {
             font-weight: bold;
             font-size: 18px;
         }
-
         .floating-button {
             position: fixed;
             bottom: 120px; 
@@ -129,7 +117,6 @@
             cursor: pointer;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
         }
-
         .footer {
             background-color: #333;
             color: white;
@@ -139,10 +126,16 @@
             bottom: 0;
             width: 100%;
         }
-
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            margin: 0 10px;
+        }
         .social-icons img {
             width: 30px;
-            margin: 0 10px;
+            margin-right: 5px;
         }
 
         /* Media Queries para pantallas pequeñas */
@@ -185,8 +178,14 @@
     <div class="footer">
         <p>Contacta conmigo en:</p>
         <div class="social-icons">
-            <a href="https://github.com/AlonsoRecuero"><img src="assets/github-logo.png" alt="GitHub"></a>
-            <a href="https://twitter.com/AlonsoRecu"><img src="assets/twitter-logo.png" alt="Twitter"></a>
+            <a href="https://github.com/AlonsoRecu" style="display: flex; align-items: center;">
+                <img src="/assets/github-logo.png" alt="GitHub">
+                <span>@AlonsoRecu</span>
+            </a>
+            <a href="https://twitter.com/AlonsoRecu" style="display: flex; align-items: center;">
+                <img src="/assets/twitter-logo.png" alt="Twitter">
+                <span>@AlonsoRecu</span>
+            </a>
         </div>
     </div>
 
