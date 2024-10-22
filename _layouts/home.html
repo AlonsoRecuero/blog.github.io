@@ -3,160 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog</title>
-    <link rel="stylesheet" href="/assets/main.css">
+    <title>Mi Blog</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
         }
-        .header {
-            background-color: #333;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            position: relative;
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
         }
-        .menu-btn {
-            position: absolute;
-            top: 15px;
-            left: 20px;
-            background-color: transparent;
-            border: none;
-            font-size: 30px;
-            color: white;
-            cursor: pointer;
-        }
-        .content {
-            margin: 0;
-            padding: 20px;
-        }
-        .article {
-            border: 1px solid #ddd;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        }
-        .article-title, .article-content {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            font-size: 16px;
-        }
-        .article-title {
-            font-weight: bold;
-            font-size: 18px;
-        }
-        .floating-button {
+
+        .new-post-btn {
             position: fixed;
-            bottom: 100px; /* Subido para evitar superposición con el footer */
-            right: 30px;
-            background-color: #ff4081;
+            bottom: 20px;
+            right: 20px;
+            background-color: #28a745;
             color: white;
             border: none;
             border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            font-size: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 50px;
+            height: 50px;
+            font-size: 30px;
             cursor: pointer;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
         }
-        .footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
+
+        .input-box {
+            margin-top: 20px;
         }
-        .social-icons img {
-            width: 30px;
-            margin: 0 10px;
+
+        #post-area {
+            margin-top: 30px;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>Bienvenido a Mi Blog</h1>
+        <p>Haz clic en el botón para crear una nueva entrada.</p>
+        
+        <!-- Área donde se añadirá el nuevo post -->
+        <div id="post-area"></div>
 
-    <div class="header">
-        <button class="menu-btn">&#9776;</button>
-        <h1>Bienvenido a mi blog</h1>
+        <!-- Botón para crear una nueva entrada -->
+        <button class="new-post-btn" onclick="addPost()">+</button>
     </div>
-
-    <div class="content">
-        <section id="article-list">
-            <!-- Artículos cargados dinámicamente -->
-        </section>
-    </div>
-
-    <button id="add-article-btn" class="floating-button">+</button>
-
-    <div class="footer">
-        <p>Contacta conmigo en:</p>
-        <div class="social-icons">
-            <a href="https://github.com/AlonsoRecuero"><img src="/assets/github-logo.png" alt="GitHub"></a>
-            <a href="https://twitter.com/AlonsoRecu"><img src="/assets/twitter-logo.png" alt="Twitter"></a>
-        </div>
-    </div>
-
-    <!-- Firebase Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
 
     <script>
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyC3yOWMkj_-y4ESMaDr-EEmXvY5Kvpm9nY",
-            authDomain: "blog-b9f88.firebaseapp.com",
-            projectId: "blog-b9f88",
-            storageBucket: "blog-b9f88.appspot.com",
-            messagingSenderId: "961397712722",
-            appId: "1:961397712722:web:d3427481220befc9463c8b",
-            measurementId: "G-EKVXR4Q12M"
-        };
+        function addPost() {
+            // Crear un nuevo div para contener el cuadro de texto
+            const postArea = document.getElementById('post-area');
+            const newPostDiv = document.createElement('div');
+            newPostDiv.classList.add('input-box');
+            
+            // Crear el cuadro de texto
+            const inputText = document.createElement('textarea');
+            inputText.rows = 4;
+            inputText.cols = 50;
+            inputText.placeholder = "Escribe tu nueva entrada aquí...";
+            
+            // Crear un botón para confirmar la entrada
+            const confirmButton = document.createElement('button');
+            confirmButton.innerHTML = "Guardar entrada";
+            confirmButton.onclick = function() {
+                alert('Entrada guardada: ' + inputText.value);
+            };
 
-        // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        // Guardar nuevo artículo en Firebase
-        document.getElementById('add-article-btn').addEventListener('click', function() {
-            const title = prompt("Escribe el título del artículo:");
-            const content = prompt("Escribe el contenido del artículo:");
-
-            if (title && content) {
-                db.collection('articles').add({
-                    title: title,
-                    content: content
-                }).then(() => {
-                    alert("Artículo añadido con éxito");
-                }).catch(error => {
-                    console.error("Error al añadir artículo: ", error);
-                });
-            }
-        });
-
-        // Recuperar artículos guardados de Firebase
-        db.collection('articles').onSnapshot(snapshot => {
-            const articleList = document.getElementById('article-list');
-            articleList.innerHTML = ''; // Limpia la lista de artículos
-            snapshot.forEach(doc => {
-                const articleData = doc.data();
-                const article = document.createElement('div');
-                article.classList.add('article');
-                article.innerHTML = `
-                    <input type="text" class="article-title" value="${articleData.title}" />
-                    <textarea class="article-content">${articleData.content}</textarea>
-                `;
-                articleList.appendChild(article);
-            });
-        });
+            // Añadir el cuadro de texto y el botón al div
+            newPostDiv.appendChild(inputText);
+            newPostDiv.appendChild(confirmButton);
+            
+            // Añadir el div al área de posts
+            postArea.appendChild(newPostDiv);
+        }
     </script>
-
 </body>
 </html>
