@@ -11,7 +11,6 @@
             margin: 0;
             padding: 0;
             display: flex;
-            flex-direction: column; /* Cambiado para una mejor estructura */
             min-height: 100vh; /* Asegura que el body ocupe al menos toda la altura de la ventana */
         }
         .header {
@@ -22,10 +21,9 @@
             color: white;
             padding: 20px;
             text-align: center;
-            width: 100vw; /* Ancho del menú a 100% del viewport */
-            height: 100px; /* Ajusta la altura según sea necesario */
+            width: 100%; /* Ancho completo del menú */
+            height: 20%; /* Ocupa toda la altura */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            z-index: 1; /* Asegura que el header esté por encima de otros elementos */
         }
         .menu-btn {
             position: absolute;
@@ -83,7 +81,6 @@
             margin-left: 20%; /* Deja espacio para el menú */
             padding: 20px;
             flex: 1; /* Permite que el contenido ocupe el resto del espacio */
-            padding-top: 120px; /* Asegura que el contenido no esté detrás del header */
         }
         .article {
             border: 1px solid #ddd;
@@ -141,7 +138,6 @@
             .content {
                 margin-left: 0; /* Sin margen para el contenido en móviles */
                 padding: 10px; /* Reduce el padding */
-                padding-top: 120px; /* Asegura que el contenido no esté detrás del header */
             }
         }
     </style>
@@ -156,11 +152,11 @@
     <div class="menu" id="menu">
         <button class="close-menu">&times;</button>
         <div class="menu-title">Menú</div>
-        <div class="menu-item">Opción 1</div>
-        <div class="menu-item">Opción 2</div>
-        <div class="menu-item">Opción 3</div>
-        <div class="menu-item">Opción 4</div>
-        <div class="menu-item">Opción 5</div>
+        <div class="menu-item" onclick="location.href='opcion1.html'">Opción 1</div>
+        <div class="menu-item" onclick="location.href='opcion2.html'">Opción 2</div>
+        <div class="menu-item" onclick="location.href='opcion3.html'">Opción 3</div>
+        <div class="menu-item" onclick="location.href='opcion4.html'">Opción 4</div>
+        <div class="menu-item" onclick="location.href='opcion5.html'">Opción 5</div>
     </div>
 
     <div class="content">
@@ -175,7 +171,7 @@
         <p>Contacta conmigo en:</p>
         <div class="social-icons">
             <a href="https://github.com/AlonsoRecuero"><img src="/assets/github-logo.png" alt="GitHub"></a>
-            <a href="https://twitter.com/AlonsoRecu"><img src="\assets\twitter-logo.png" alt="Twitter"></a>
+            <a href="https://twitter.com/AlonsoRecu"><img src="/assets/twitter-logo.png" alt="Twitter"></a>
         </div>
     </div>
 
