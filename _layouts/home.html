@@ -28,12 +28,58 @@
             cursor: pointer;
         }
 
-        .input-box {
-            margin-top: 20px;
+        /* Estilos para el modal */
+        .modal {
+            display: none; /* Por defecto oculto */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
         }
 
-        #post-area {
-            margin-top: 30px;
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+        }
+
+        .modal-content input, .modal-content textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .close-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .save-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -41,40 +87,66 @@
     <div class="container">
         <h1>Bienvenido a Mi Blog</h1>
         <p>Haz clic en el botón para crear una nueva entrada.</p>
-        
+
         <!-- Área donde se añadirá el nuevo post -->
         <div id="post-area"></div>
 
         <!-- Botón para crear una nueva entrada -->
-        <button class="new-post-btn" onclick="addPost()">+</button>
+        <button class="new-post-btn" onclick="showModal()">+</button>
+
+        <!-- Modal para crear una nueva entrada -->
+        <div class="modal" id="postModal">
+            <div class="modal-content">
+                <h2>Nueva Entrada</h2>
+                <input type="text" id="postTitle" placeholder="Título de la entrada">
+                <textarea id="postText" rows="5" placeholder="Escribe el contenido aquí..."></textarea>
+                <button class="close-btn" onclick="closeModal()">Cancelar</button>
+                <button class="save-btn" onclick="savePost()">Guardar</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        function addPost() {
-            // Crear un nuevo div para contener el cuadro de texto
-            const postArea = document.getElementById('post-area');
-            const newPostDiv = document.createElement('div');
-            newPostDiv.classList.add('input-box');
-            
-            // Crear el cuadro de texto
-            const inputText = document.createElement('textarea');
-            inputText.rows = 4;
-            inputText.cols = 50;
-            inputText.placeholder = "Escribe tu nueva entrada aquí...";
-            
-            // Crear un botón para confirmar la entrada
-            const confirmButton = document.createElement('button');
-            confirmButton.innerHTML = "Guardar entrada";
-            confirmButton.onclick = function() {
-                alert('Entrada guardada: ' + inputText.value);
-            };
+        // Función para mostrar el modal
+        function showModal() {
+            document.getElementById('postModal').style.display = 'flex';
+        }
 
-            // Añadir el cuadro de texto y el botón al div
-            newPostDiv.appendChild(inputText);
-            newPostDiv.appendChild(confirmButton);
-            
-            // Añadir el div al área de posts
-            postArea.appendChild(newPostDiv);
+        // Función para cerrar el modal
+        function closeModal() {
+            document.getElementById('postModal').style.display = 'none';
+        }
+
+        // Función para guardar la entrada
+        function savePost() {
+            const title = document.getElementById('postTitle').value;
+            const text = document.getElementById('postText').value;
+
+            if (title && text) {
+                // Crear un nuevo div para la entrada
+                const postArea = document.getElementById('post-area');
+                const newPostDiv = document.createElement('div');
+                const postTitle = document.createElement('h3');
+                const postText = document.createElement('p');
+
+                // Asignar el título y el texto ingresados
+                postTitle.textContent = title;
+                postText.textContent = text;
+
+                // Añadir el título y el texto al div
+                newPostDiv.appendChild(postTitle);
+                newPostDiv.appendChild(postText);
+
+                // Añadir el div al área de posts
+                postArea.appendChild(newPostDiv);
+
+                // Cerrar el modal y limpiar los campos
+                closeModal();
+                document.getElementById('postTitle').value = '';
+                document.getElementById('postText').value = '';
+            } else {
+                alert('Por favor, completa todos los campos.');
+            }
         }
     </script>
 </body>
