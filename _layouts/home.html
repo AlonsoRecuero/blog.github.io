@@ -28,24 +28,24 @@
             color: white;
             cursor: pointer;
         }
-        .dropdown {
-            display: none; /* Ocultar el menú por defecto */
+        .menu {
+            display: none; /* Oculto por defecto */
             position: absolute;
-            top: 60px; /* Ajustar según el tamaño de la cabecera */
+            top: 70px; /* Justo debajo del header */
             left: 20px;
             background-color: white;
             border: 1px solid #ddd;
+            border-radius: 5px;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            z-index: 1000; /* Para asegurarse de que esté en la parte superior */
+            z-index: 1;
         }
-        .dropdown a {
-            display: block;
+        .menu-item {
             padding: 10px;
-            text-decoration: none;
+            cursor: pointer;
             color: #333;
         }
-        .dropdown a:hover {
-            background-color: #f0f0f0; /* Color de fondo al pasar el ratón */
+        .menu-item:hover {
+            background-color: #f0f0f0;
         }
         .content {
             margin: 0;
@@ -105,13 +105,14 @@
     <div class="header">
         <button class="menu-btn">&#9776;</button>
         <h1>Bienvenido a mi blog</h1>
-        <div id="dropdown-menu" class="dropdown">
-            <a href="#opcion1">Opción 1</a>
-            <a href="#opcion2">Opción 2</a>
-            <a href="#opcion3">Opción 3</a>
-            <a href="#opcion4">Opción 4</a>
-            <a href="#opcion5">Opción 5</a>
-        </div>
+    </div>
+
+    <div class="menu" id="menu">
+        <div class="menu-item">Opción 1</div>
+        <div class="menu-item">Opción 2</div>
+        <div class="menu-item">Opción 3</div>
+        <div class="menu-item">Opción 4</div>
+        <div class="menu-item">Opción 5</div>
     </div>
 
     <div class="content">
@@ -130,66 +131,18 @@
         </div>
     </div>
 
-    <!-- Firebase Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
-
     <script>
-        // Configuración de Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyC3yOWMkj_-y4ESMaDr-EEmXvY5Kvpm9nY",
-            authDomain: "blog-b9f88.firebaseapp.com",
-            projectId: "blog-b9f88",
-            storageBucket: "blog-b9f88.appspot.com",
-            messagingSenderId: "961397712722",
-            appId: "1:961397712722:web:d3427481220befc9463c8b",
-            measurementId: "G-EKVXR4Q12M"
-        };
-
-        // Inicializar Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        // Manejador de eventos para el botón del menú
+        // Mostrar u ocultar el menú al hacer clic en el botón de hamburguesa
         document.querySelector('.menu-btn').addEventListener('click', function() {
-            const dropdownMenu = document.getElementById('dropdown-menu');
-            dropdownMenu.style.display = dropdownMenu.style.display === 'none' || dropdownMenu.style.display === '' ? 'block' : 'none';
+            const menu = document.getElementById('menu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
         });
 
-        // Guardar nuevo artículo en Firestore
-        document.getElementById('add-article-btn').addEventListener('click', function() {
-            const title = prompt("Introduce el título del artículo:");
-            const content = prompt("Introduce el contenido del artículo:");
-
-            if (title && content) {
-                db.collection('articles').add({
-                    title: title,
-                    content: content
-                })
-                .then(() => {
-                    console.log("Artículo guardado con éxito.");
-                })
-                .catch((error) => {
-                    console.error("Error al guardar el artículo: ", error);
-                });
-            } else {
-                alert("Por favor, completa todos los campos.");
-            }
-        });
-
-        // Recuperar artículos guardados de Firestore y mostrarlos en la página
-        db.collection('articles').onSnapshot((snapshot) => {
-            const articleList = document.getElementById('article-list');
-            articleList.innerHTML = ''; // Limpiar la lista de artículos
-            snapshot.forEach((doc) => {
-                const data = doc.data();
-                const article = document.createElement('div');
-                article.classList.add('article');
-                article.innerHTML = `
-                    <input type="text" class="article-title" value="${data.title}" readonly />
-                    <textarea class="article-content" readonly>${data.content}</textarea>
-                `;
-                articleList.appendChild(article);
+        // Ocultar el menú si se hace clic en una opción
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const menu = document.getElementById('menu');
+                menu.style.display = 'none'; // Ocultar el menú después de hacer clic
             });
         });
     </script>
