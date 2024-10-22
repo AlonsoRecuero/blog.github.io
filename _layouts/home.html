@@ -13,7 +13,7 @@
             display: flex;
             min-height: 100vh; /* Asegura que el body ocupe al menos toda la altura de la ventana */
         }
-        .header {
+	.header {
             background-color: #333;
             position: fixed;
             top: 0;
@@ -21,9 +21,10 @@
             color: white;
             padding: 20px;
             text-align: center;
-            width: 100%; /* Ancho completo del menú */
-            height: 20%; /* Ocupa toda la altura */
+            width: 100vw; /* Ancho del menú a 100% del viewport */
+            height: 100px; /* Ajusta la altura según sea necesario */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1; /* Asegura que el header esté por encima de otros elementos */
         }
         .menu-btn {
             position: absolute;
