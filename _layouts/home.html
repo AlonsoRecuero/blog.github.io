@@ -28,6 +28,25 @@
             color: white;
             cursor: pointer;
         }
+        .dropdown {
+            display: none; /* Ocultar el menú por defecto */
+            position: absolute;
+            top: 60px; /* Ajustar según el tamaño de la cabecera */
+            left: 20px;
+            background-color: white;
+            border: 1px solid #ddd;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000; /* Para asegurarse de que esté en la parte superior */
+        }
+        .dropdown a {
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            color: #333;
+        }
+        .dropdown a:hover {
+            background-color: #f0f0f0; /* Color de fondo al pasar el ratón */
+        }
         .content {
             margin: 0;
             padding: 20px;
@@ -86,6 +105,13 @@
     <div class="header">
         <button class="menu-btn">&#9776;</button>
         <h1>Bienvenido a mi blog</h1>
+        <div id="dropdown-menu" class="dropdown">
+            <a href="#opcion1">Opción 1</a>
+            <a href="#opcion2">Opción 2</a>
+            <a href="#opcion3">Opción 3</a>
+            <a href="#opcion4">Opción 4</a>
+            <a href="#opcion5">Opción 5</a>
+        </div>
     </div>
 
     <div class="content">
@@ -123,6 +149,12 @@
         // Inicializar Firebase
         const app = firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+
+        // Manejador de eventos para el botón del menú
+        document.querySelector('.menu-btn').addEventListener('click', function() {
+            const dropdownMenu = document.getElementById('dropdown-menu');
+            dropdownMenu.style.display = dropdownMenu.style.display === 'none' || dropdownMenu.style.display === '' ? 'block' : 'none';
+        });
 
         // Guardar nuevo artículo en Firestore
         document.getElementById('add-article-btn').addEventListener('click', function() {
