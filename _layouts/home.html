@@ -3,151 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Blog</title>
+    <title>Blog</title>
+    <link rel="stylesheet" href="/assets/main.css">
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
-
-        .container {
-            width: 80%;
-            margin: 0 auto;
+        .header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
         }
-
-        .new-post-btn {
+        .menu-btn {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            background-color: transparent;
+            border: none;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+        }
+        .content {
+            margin: 0;
+            padding: 20px;
+        }
+        .article {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .article-title, .article-content {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        .article-title {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .floating-button {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #28a745;
+            bottom: 100px; /* Ajustado para que no se superponga al footer */
+            right: 30px;
+            background-color: #ff4081;
             color: white;
             border: none;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 30px;
-            cursor: pointer;
-        }
-
-        /* Estilos para el modal */
-        .modal {
-            display: none; /* Por defecto oculto */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            justify-content: center;
+            width: 60px;
+            height: 60px;
+            font-size: 36px;
+            display: flex;
             align-items: center;
-        }
-
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            width: 400px;
-            text-align: center;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .modal-content h2 {
-            margin-top: 0;
-        }
-
-        .modal-content input, .modal-content textarea {
-            width: 100%;
-            margin-bottom: 10px;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .close-btn {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 10px 20px;
+            justify-content: center;
             cursor: pointer;
-            border-radius: 5px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
         }
-
-        .save-btn {
-            background-color: #28a745;
+        .footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .social-icons img {
+            width: 30px;
+            margin: 0 10px;
+        }
+        /* Estilos del formulario */
+        #article-form {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        #article-form input, #article-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        #article-form button {
+            padding: 10px 20px;
+            background-color: #ff4081;
             color: white;
             border: none;
-            padding: 10px 20px;
             cursor: pointer;
             border-radius: 5px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Bienvenido a Mi Blog</h1>
-        <p>Haz clic en el botón para crear una nueva entrada.</p>
 
-        <!-- Área donde se añadirá el nuevo post -->
-        <div id="post-area"></div>
+    <div class="header">
+        <button class="menu-btn">&#9776;</button>
+        <h1>Bienvenido a mi blog</h1>
+    </div>
 
-        <!-- Botón para crear una nueva entrada -->
-        <button class="new-post-btn" onclick="showModal()">+</button>
-
-        <!-- Modal para crear una nueva entrada -->
-        <div class="modal" id="postModal">
-            <div class="modal-content">
-                <h2>Nueva Entrada</h2>
-                <input type="text" id="postTitle" placeholder="Título de la entrada">
-                <textarea id="postText" rows="5" placeholder="Escribe el contenido aquí..."></textarea>
-                <button class="close-btn" onclick="closeModal()">Cancelar</button>
-                <button class="save-btn" onclick="savePost()">Guardar</button>
-            </div>
+    <div class="content">
+        <section id="article-list">
+            <!-- Artículos cargados dinámicamente -->
+        </section>
+        
+        <!-- Formulario para crear nuevo artículo -->
+        <div id="article-form">
+            <input type="text" id="article-title" placeholder="Título del artículo">
+            <textarea id="article-content" rows="5" placeholder="Contenido del artículo"></textarea>
+            <button id="save-article-btn">Guardar</button>
         </div>
     </div>
 
+    <button id="add-article-btn" class="floating-button">+</button>
+
+    <div class="footer">
+        <p>Contacta conmigo en:</p>
+        <div class="social-icons">
+            <a href="https://github.com/AlonsoRecuero"><img src="/assets/github-logo.png" alt="GitHub"></a>
+            <a href="https://twitter.com/AlonsoRecu"><img src="/assets/twitter-logo.png" alt="Twitter"></a>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+
     <script>
-        // Función para mostrar el modal
-        function showModal() {
-            document.getElementById('postModal').style.display = 'flex';
-        }
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3yOWMkj_-y4ESMaDr-EEmXvY5Kvpm9nY",
+            authDomain: "blog-b9f88.firebaseapp.com",
+            projectId: "blog-b9f88",
+            storageBucket: "blog-b9f88.appspot.com",
+            messagingSenderId: "961397712722",
+            appId: "1:961397712722:web:d3427481220befc9463c8b",
+            measurementId: "G-EKVXR4Q12M"
+        };
 
-        // Función para cerrar el modal
-        function closeModal() {
-            document.getElementById('postModal').style.display = 'none';
-        }
+        // Inicializar Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-        // Función para guardar la entrada
-        function savePost() {
-            const title = document.getElementById('postTitle').value;
-            const text = document.getElementById('postText').value;
+        // Mostrar el formulario al hacer clic en el botón "+"
+        document.getElementById('add-article-btn').addEventListener('click', function() {
+            document.getElementById('article-form').style.display = 'block';
+        });
 
-            if (title && text) {
-                // Crear un nuevo div para la entrada
-                const postArea = document.getElementById('post-area');
-                const newPostDiv = document.createElement('div');
-                const postTitle = document.createElement('h3');
-                const postText = document.createElement('p');
+        // Guardar nuevo artículo en Firestore
+        document.getElementById('save-article-btn').addEventListener('click', function() {
+            const title = document.getElementById('article-title').value;
+            const content = document.getElementById('article-content').value;
 
-                // Asignar el título y el texto ingresados
-                postTitle.textContent = title;
-                postText.textContent = text;
-
-                // Añadir el título y el texto al div
-                newPostDiv.appendChild(postTitle);
-                newPostDiv.appendChild(postText);
-
-                // Añadir el div al área de posts
-                postArea.appendChild(newPostDiv);
-
-                // Cerrar el modal y limpiar los campos
-                closeModal();
-                document.getElementById('postTitle').value = '';
-                document.getElementById('postText').value = '';
+            if (title && content) {
+                db.collection('articles').add({
+                    title: title,
+                    content: content
+                })
+                .then(() => {
+                    console.log("Artículo guardado con éxito.");
+                    // Limpiar los campos después de guardar
+                    document.getElementById('article-title').value = '';
+                    document.getElementById('article-content').value = '';
+                    // Ocultar el formulario después de guardar
+                    document.getElementById('article-form').style.display = 'none';
+                })
+                .catch((error) => {
+                    console.error("Error al guardar el artículo: ", error);
+                });
             } else {
-                alert('Por favor, completa todos los campos.');
+                alert("Por favor, completa todos los campos.");
             }
-        }
+        });
+
+        // Recuperar artículos guardados de Firestore y mostrarlos en la página
+        db.collection('articles').onSnapshot((snapshot) => {
+            const articleList = document.getElementById('article-list');
+            articleList.innerHTML = ''; // Limpiar la lista de artículos
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                const article = document.createElement('div');
+                article.classList.add('article');
+                article.innerHTML = `
+                    <input type="text" class="article-title" value="${data.title}" readonly />
+                    <textarea class="article-content" readonly>${data.content}</textarea>
+                `;
+                articleList.appendChild(article);
+            });
+        });
     </script>
+
 </body>
 </html>
