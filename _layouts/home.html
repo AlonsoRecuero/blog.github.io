@@ -51,7 +51,7 @@
         }
         .floating-button {
             position: fixed;
-            bottom: 100px; /* Ajustado para que no se superponga al footer */
+            bottom: 120px; 
             right: 30px;
             background-color: #ff4081;
             color: white;
@@ -79,23 +79,39 @@
             width: 30px;
             margin: 0 10px;
         }
-        /* Estilos del formulario */
-        #article-form {
+
+        /* Estilos del modal */
+        .modal {
             display: none;
-            margin-top: 20px;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
             padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f9f9f9;
+            border-radius: 10px;
+            width: 400px;
+            text-align: center;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
         }
-        #article-form input, #article-form textarea {
+
+        .modal-content input, .modal-content textarea {
             width: 100%;
             padding: 10px;
             margin-bottom: 10px;
             font-size: 16px;
         }
-        #article-form button {
+
+        .modal-content button {
             padding: 10px 20px;
             background-color: #ff4081;
             color: white;
@@ -116,9 +132,11 @@
         <section id="article-list">
             <!-- Artículos cargados dinámicamente -->
         </section>
-        
-        <!-- Formulario para crear nuevo artículo -->
-        <div id="article-form">
+    </div>
+
+    <!-- Modal para crear nuevo artículo -->
+    <div id="article-modal" class="modal">
+        <div class="modal-content">
             <input type="text" id="article-title" placeholder="Título del artículo">
             <textarea id="article-content" rows="5" placeholder="Contenido del artículo"></textarea>
             <button id="save-article-btn">Guardar</button>
@@ -155,9 +173,9 @@
         const app = firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // Mostrar el formulario al hacer clic en el botón "+"
+        // Mostrar el modal al hacer clic en el botón "+"
         document.getElementById('add-article-btn').addEventListener('click', function() {
-            document.getElementById('article-form').style.display = 'block';
+            document.getElementById('article-modal').style.display = 'flex';
         });
 
         // Guardar nuevo artículo en Firestore
@@ -175,8 +193,8 @@
                     // Limpiar los campos después de guardar
                     document.getElementById('article-title').value = '';
                     document.getElementById('article-content').value = '';
-                    // Ocultar el formulario después de guardar
-                    document.getElementById('article-form').style.display = 'none';
+                    // Ocultar el modal después de guardar
+                    document.getElementById('article-modal').style.display = 'none';
                 })
                 .catch((error) => {
                     console.error("Error al guardar el artículo: ", error);
@@ -185,6 +203,14 @@
                 alert("Por favor, completa todos los campos.");
             }
         });
+
+        // Cerrar el modal al hacer clic fuera de él
+        window.onclick = function(event) {
+            const modal = document.getElementById('article-modal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
 
         // Recuperar artículos guardados de Firestore y mostrarlos en la página
         db.collection('articles').onSnapshot((snapshot) => {
