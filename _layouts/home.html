@@ -46,6 +46,16 @@
             padding: 20px;
             box-sizing: border-box;
         }
+        .close-menu {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
         .menu-title {
             font-size: 24px;
             margin-bottom: 20px;
@@ -137,6 +147,7 @@
     </div>
 
     <div class="menu" id="menu">
+        <button class="close-menu">&times;</button>
         <div class="menu-title">Menú</div>
         <div class="menu-item">Opción 1</div>
         <div class="menu-item">Opción 2</div>
@@ -174,6 +185,12 @@
                 const menu = document.getElementById('menu');
                 menu.style.display = 'none'; // Ocultar el menú después de hacer clic
             });
+        });
+
+        // Ocultar el menú al hacer clic en la 'X'
+        document.querySelector('.close-menu').addEventListener('click', function() {
+            const menu = document.getElementById('menu');
+            menu.style.display = 'none'; // Ocultar el menú
         });
     </script>
 
