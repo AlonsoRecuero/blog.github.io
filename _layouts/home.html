@@ -10,6 +10,22 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            display: flex;
+            flex-direction: column; /* Cambiado para una mejor estructura */
+            min-height: 100vh; /* Asegura que el body ocupe al menos toda la altura de la ventana */
+        }
+        .header {
+            background-color: #333;
+            position: fixed;
+            top: 0;
+            left: 0;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            width: 100vw; /* Ancho del menú a 100% del viewport */
+            height: 100px; /* Ajusta la altura según sea necesario */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1; /* Asegura que el header esté por encima de otros elementos */
         }
         .menu-btn {
             position: absolute;
@@ -21,9 +37,53 @@
             color: white;
             cursor: pointer;
         }
-        .content {
-            margin: 0;
+        .menu {
+            display: none; /* Oculto por defecto */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 20%; /* Ancho del menú */
+            height: 100%; /* Ocupa toda la altura */
+            background-color: #fff;
+            border-right: 1px solid #ddd;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            z-index: 2;
             padding: 20px;
+            box-sizing: border-box;
+        }
+        .close-menu {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+        .menu-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .menu-item {
+            padding: 15px;
+            cursor: pointer;
+            color: #333;
+            border: 1px solid transparent;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .menu-item:hover {
+            background-color: #f0f0f0;
+            border-color: #ddd;
+        }
+        .content {
+            margin-left: 20%; /* Deja espacio para el menú */
+            padding: 20px;
+            flex: 1; /* Permite que el contenido ocupe el resto del espacio */
+            padding-top: 120px; /* Asegura que el contenido no esté detrás del header */
         }
         .article {
             border: 1px solid #ddd;
@@ -73,95 +133,34 @@
             margin: 0 10px;
         }
 
-        /* Estilos del menú */
-        .menu {
-            display: none; /* Oculto por defecto */
-            position: fixed;
-            z-index: 2;
-            left: 0;
-            top: 0;
-            width: 200px; /* Ancho del menú */
-            height: 100%; /* Altura del menú */
-            background-color: #333; /* Color de fondo */
-            color: white; /* Color del texto */
-            padding: 20px; /* Espaciado interno */
-        }
-        .menu-title {
-            font-size: 24px; /* Tamaño del título del menú */
-            margin-bottom: 20px; /* Espaciado inferior */
-        }
-        .menu-option {
-            display: block; /* Cada opción en una nueva línea */
-            color: white; /* Color del texto de las opciones */
-            padding: 10px 0; /* Espaciado interno de las opciones */
-            text-decoration: none; /* Sin subrayado */
-        }
-        .menu-option:hover {
-            background-color: #444; /* Color de fondo al pasar el ratón */
-        }
-        .close-menu {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            color: white; /* Color de la 'X' */
-            font-size: 24px; /* Tamaño de la 'X' */
-            cursor: pointer; /* Cursor tipo puntero al pasar por encima */
-        }
-
-        /* Estilos del modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            width: 400px;
-            text-align: center;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .modal-content input, .modal-content textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-
-        .modal-content button {
-            padding: 10px 20px;
-            background-color: #ff4081;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
+        /* Media Queries para pantallas pequeñas */
+        @media (max-width: 768px) {
+            .menu {
+                width: 100%; /* El menú ocupa el ancho completo en móviles */
+            }
+            .content {
+                margin-left: 0; /* Sin margen para el contenido en móviles */
+                padding: 10px; /* Reduce el padding */
+                padding-top: 120px; /* Asegura que el contenido no esté detrás del header */
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="content">
-        <button class="menu-btn">&#9776;</button> <!-- Botón del menú -->
-        <div id="menu" class="menu">
-            <span class="close-menu" id="close-menu-btn">&times;</span> <!-- Botón para cerrar el menú -->
-            <h2 class="menu-title">Menú</h2>
-            <a href="#" class="menu-option">Opción 1</a>
-            <a href="#" class="menu-option">Opción 2</a>
-            <a href="#" class="menu-option">Opción 3</a>
-            <a href="#" class="menu-option">Opción 4</a>
-            <a href="#" class="menu-option">Opción 5</a>
-        </div>
+    <div class="header">
+        <button class="menu-btn">&#9776;</button>
+        <h1>Bienvenido a mi blog</h1>
+    </div>
+
+    <div class="menu" id="menu">
+        <button class="close-menu">&times;</button>
+        <div class="menu-title">Menú</div>
+        <div class="menu-item">Opción 1</div>
+        <div class="menu-item">Opción 2</div>
+        <div class="menu-item">Opción 3</div>
+        <div class="menu-item">Opción 4</div>
+        <div class="menu-item">Opción 5</div>
     </div>
 
     <div class="content">
@@ -180,75 +179,27 @@
         </div>
     </div>
 
-    <!-- Firebase Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
-
     <script>
-        // Configuración de Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyC3yOWMkj_-y4ESMaDr-EEmXvY5Kvpm9nY",
-            authDomain: "blog-b9f88.firebaseapp.com",
-            projectId: "blog-b9f88",
-            storageBucket: "blog-b9f88.appspot.com",
-            messagingSenderId: "961397712722",
-            appId: "1:961397712722:web:d3427481220befc9463c8b",
-            measurementId: "G-EKVXR4Q12M"
-        };
-
-        // Inicializar Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        // Paso 1: Verifica la configuración de Firebase
-        // console.log(firebaseConfig); // Revisa si las credenciales son correctas
-
-        // Paso 2: Verifica la conexión de Firebase
-        firebase.firestore().collection('test').get()
-        .then(() => {
-            console.log("Conexión a Firebase exitosa.");
-        })
-        .catch((error) => {
-            console.error("Error al conectar a Firebase:", error);
-        });
-
-        // Mostrar el menú al hacer clic en el botón de menú
+        // Mostrar u ocultar el menú al hacer clic en el botón de hamburguesa
         document.querySelector('.menu-btn').addEventListener('click', function() {
-            document.getElementById('menu').style.display = 'block';
+            const menu = document.getElementById('menu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
         });
 
-        // Cerrar el menú al hacer clic en la 'X'
-        document.getElementById('close-menu-btn').addEventListener('click', function() {
-            document.getElementById('menu').style.display = 'none';
+        // Ocultar el menú si se hace clic en una opción
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const menu = document.getElementById('menu');
+                menu.style.display = 'none'; // Ocultar el menú después de hacer clic
+            });
         });
 
-        // Guardar nuevo artículo en Firestore
-        document.getElementById('save-article-btn').addEventListener('click', function() {
-            const title = document.getElementById('article-title').value;
-            const content = document.getElementById('article-content').value;
-
-            if (title && content) {
-                db.collection('articles').add({
-                    title: title,
-                    content: content
-                })
-                .then(() => {
-                    console.log("Artículo guardado con éxito.");
-                    // Limpiar los campos después de guardar
-                    document.getElementById('article-title').value = '';
-                    document.getElementById('article-content').value = '';
-                    // Ocultar el modal después de guardar
-                    document.getElementById('article-modal').style.display = 'none';
-                })
-                .catch((error) => {
-                    console.error("Error al guardar el artículo: ", error);
-                });
-            } else {
-                alert("Por favor, completa todos los campos.");
-            }
+        // Ocultar el menú al hacer clic en la 'X'
+        document.querySelector('.close-menu').addEventListener('click', function() {
+            const menu = document.getElementById('menu');
+            menu.style.display = 'none'; // Ocultar el menú
         });
+    </script>
 
-        // Cerrar el modal al hacer clic fuera de él
-        window.onclick = function(event) {
-            const modal = document.getElementById('article-modal');
-            if
+</body>
+</html>
