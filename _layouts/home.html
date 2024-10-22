@@ -11,6 +11,7 @@
             margin: 0;
             padding: 0;
             display: flex;
+            min-height: 100vh; /* Asegura que el body ocupe al menos toda la altura de la ventana */
         }
         .header {
             background-color: #333;
@@ -19,6 +20,7 @@
             text-align: center;
             position: relative;
             width: 100%; /* Asegura que la cabecera ocupe todo el ancho */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         .menu-btn {
             position: absolute;
@@ -65,6 +67,7 @@
         .content {
             margin-left: 20%; /* Deja espacio para el menú */
             padding: 20px;
+            flex: 1; /* Permite que el contenido ocupe el resto del espacio */
         }
         .article {
             border: 1px solid #ddd;
