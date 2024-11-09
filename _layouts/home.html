@@ -1,218 +1,448 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog</title>
-    <link rel="stylesheet" href="assets/main.css"> <!-- Enlace al archivo CSS externo -->
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            min-height: 100vh; /* Asegura que el body ocupe al menos toda la altura de la ventana */
-        }
+<html><head><base href="." />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Blog</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
 
-        .header {
-            background-color: #333;
-            position: fixed;
-            top: 0;
-            left: 0;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            width: 100vw; /* Ancho del menú a 100% del viewport */
-            height: 100px; /* Ajusta la altura según sea necesario */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            z-index: 1; /* Asegura que el header esté por encima de otros elementos */
-        }
+body {
+    background-color: #f8f0ff;
+}
 
-        .menu-btn {
-            position: absolute;
-            top: 15px;
-            left: 20px;
-            background-color: transparent;
-            border: none;
-            font-size: 30px;
-            color: white;
-            cursor: pointer;
-        }
+.header {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 15px rgba(106, 17, 203, 0.2);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
 
-        .menu {
-            display: none; /* Oculto por defecto */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 20%; /* Ancho del menú */
-            height: 100%; /* Ocupa toda la altura */
-            background-color: #fff;
-            border-right: 1px solid #ddd;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            z-index: 2;
-            padding: 20px;
-            box-sizing: border-box;
-        }
+.login-btn {
+    background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
 
-        .close-menu {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #333;
-        }
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
 
-        .menu-title {
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: #333;
-        }
+.hamburger {
+    width: 30px;
+    height: 25px;
+    position: relative;
+    cursor: pointer;
+}
 
-        .menu-item {
-            padding: 15px;
-            cursor: pointer;
-            color: #333;
-            border: 1px solid transparent;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            transition: background-color 0.3s, border-color 0.3s;
-        }
+.hamburger span {
+    display: block;
+    position: absolute;
+    height: 3px;
+    width: 100%;
+    background: #ffffff;
+    border-radius: 3px;
+    transition: all 0.4s ease;
+}
 
-        .menu-item:hover {
-            background-color: #f0f0f0;
-            border-color: #ddd;
-        }
+.hamburger span:nth-child(1) { top: 0px; }
+.hamburger span:nth-child(2) { top: 10px; }
+.hamburger span:nth-child(3) { top: 20px; }
 
-        .content {
-            margin-left: 20%; /* Deja espacio para el menú */
-            padding: 20px;
-            flex: 1; /* Permite que el contenido ocupe el resto del espacio */
-        }
+.hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+}
 
-        .article {
-            border: 1px solid #ddd;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        }
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+    transform: translateX(20px);
+}
 
-        .article-title, .article-content {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            font-size: 16px;
-        }
+.hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
 
-        .article-title {
-            font-weight: bold;
-            font-size: 18px;
-        }
+.menu {
+    position: fixed;
+    top: 70px;
+    left: -300px;
+    width: 300px;
+    height: calc(100vh - 70px);
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    transition: left 0.4s ease;
+    box-shadow: 2px 0 15px rgba(0,0,0,0.2);
+}
 
-        .floating-button {
-            position: fixed;
-            bottom: 120px; 
-            right: 30px;
-            background-color: #ff4081;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            font-size: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-        }
+.menu.active {
+    left: 0;
+}
 
-        .footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
+.menu ul {
+    list-style: none;
+    padding: 20px;
+}
 
-        .social-icons img {
-            width: 30px;
-            margin: 0 10px;
-        }
+.menu ul li {
+    margin: 20px 0;
+    transform: translateX(-20px);
+    opacity: 0;
+    transition: all 0.4s ease;
+}
 
-        /* Media Queries para pantallas pequeñas */
-        @media (max-width: 768px) {
-            .menu {
-                width: 100%; /* El menú ocupa el ancho completo en móviles */
-            }
-            .content {
-                margin-left: 0; /* Sin margen para el contenido en móviles */
-                padding: 10px; /* Reduce el padding */
-            }
-        }
-    </style>
+.menu.active ul li {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.menu ul li:nth-child(1) { transition-delay: 0.1s; }
+.menu ul li:nth-child(2) { transition-delay: 0.2s; }
+.menu ul li:nth-child(3) { transition-delay: 0.3s; }
+.menu ul li:nth-child(4) { transition-delay: 0.4s; }
+.menu ul li:nth-child(5) { transition-delay: 0.5s; }
+
+.menu ul li a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1.2em;
+    transition: all 0.3s;
+    display: block;
+    padding: 10px 20px;
+    border-radius: 25px;
+}
+
+.menu ul li a:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateX(10px);
+}
+
+.login-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    z-index: 1001;
+    animation: modalPop 0.4s ease;
+}
+
+@keyframes modalPop {
+    from {
+        transform: translate(-50%, -60%);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+}
+
+.login-modal.active {
+    display: block;
+}
+
+.main-content {
+    margin-top: 100px;
+    padding: 40px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.main-content h1 {
+    color: #6a11cb;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-align: center;
+    animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.blog-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    animation: fadeIn 0.8s ease forwards;
+    opacity: 0;
+}
+
+.blog-card:hover {
+    transform: translateY(-10px);
+}
+
+.blog-card-image {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(45deg, #6a11cb, #2575fc);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 3em;
+}
+
+.blog-content {
+    padding: 20px;
+}
+
+.blog-content h2 {
+    color: #6a11cb;
+    margin-bottom: 10px;
+}
+
+.blog-content p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.read-more {
+    display: inline-block;
+    padding: 8px 20px;
+    background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+    color: white;
+    text-decoration: none;
+    border-radius: 20px;
+    transition: transform 0.3s ease;
+}
+
+.read-more:hover {
+    transform: translateX(5px);
+}
+
+.featured-post {
+    background: linear-gradient(135deg, #6a11cb20 0%, #2575fc20 100%);
+    padding: 30px;
+    border-radius: 15px;
+    margin: 40px 0;
+    animation: slideIn 0.8s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+.blog-card:nth-child(1) { animation-delay: 0.2s; }
+.blog-card:nth-child(2) { animation-delay: 0.4s; }
+.blog-card:nth-child(3) { animation-delay: 0.6s; }
+.blog-card:nth-child(4) { animation-delay: 0.8s; }
+
+.tags {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.tag {
+    background: #f0e7ff;
+    color: #6a11cb;
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-size: 0.9em;
+}
+</style>
 </head>
 <body>
-
-    <div class="header">
-        <button class="menu-btn">&#9776;</button>
-        <h1>Bienvenido a mi blog</h1>
-    </div>
-
-    <div class="menu" id="menu">
-        <button class="close-menu">&times;</button>
-        <div class="menu-title">Menú</div>
-        <div class="menu-item" onclick="location.href='opcion1.html'">Opción 1</div>
-        <div class="menu-item" onclick="location.href='opcion2.html'">Opción 2</div>
-        <div class="menu-item" onclick="location.href='opcion3.html'">Opción 3</div>
-        <div class="menu-item" onclick="location.href='opcion4.html'">Opción 4</div>
-        <div class="menu-item" onclick="location.href='opcion5.html'">Opción 5</div>
-    </div>
-
-    <div class="content">
-        <section id="article-list">
-            <!-- Artículos cargados dinámicamente -->
-        </section>
-    </div>
-
-    <button id="add-article-btn" class="floating-button">+</button>
-
-    <div class="footer">
-        <p>Contacta conmigo en:</p>
-        <div class="social-icons">
-            <a href="https://github.com/AlonsoRecuero"><img src="assets/github-logo.png" alt="GitHub"></a>
-            <a href="https://github.com/AlonsoRecuero">@AlonsoRecuero</a>
-            <a href="https://twitter.com/AlonsoRecu"><img src="assets/twitter-logo.png" alt="Twitter"></a>
-            <a href="https://twitter.com/AlonsoRecu">@AlonsoRecu</a>
+    <header class="header">
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
+        <button class="login-btn">Login</button>
+    </header>
+
+    <nav class="menu">
+        <ul>
+            <li><a href="https://example.com/inicio">Inicio</a></li>
+            <li><a href="https://example.com/articulos">Artículos</a></li>
+            <li><a href="https://example.com/categorias">Categorías</a></li>
+            <li><a href="https://example.com/sobre-mi">Sobre Mí</a></li>
+            <li><a href="https://example.com/contacto">Contacto</a></li>
+        </ul>
+    </nav>
+
+    <div class="overlay"></div>
+
+    <div class="login-modal">
+        <span class="close-modal">×</span>
+        <h2>Iniciar Sesión</h2>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username">Usuario:</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit" class="login-btn">Entrar</button>
+        </form>
     </div>
 
-    <script>
-        // Mostrar u ocultar el menú al hacer clic en el botón de hamburguesa
-        document.querySelector('.menu-btn').addEventListener('click', function() {
-            const menu = document.getElementById('menu');
-            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-        });
+    <main class="main-content">
+        <h1>Bienvenido a Mi Blog</h1>
+        
+        <div class="featured-post">
+            <h2>Post Destacado</h2>
+            <div class="tags">
+                <span class="tag">Tecnología</span>
+                <span class="tag">Innovación</span>
+            </div>
+            <p>Descubre las últimas tendencias en desarrollo web y tecnología. Un viaje a través de las innovaciones que están cambiando el mundo digital.</p>
+            <a href="https://example.com/post-destacado" class="read-more">Leer más</a>
+        </div>
 
-        // Ocultar el menú si se hace clic en una opción
-        document.querySelectorAll('.menu-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const menu = document.getElementById('menu');
-                menu.style.display = 'none'; // Ocultar el menú después de hacer clic
-            });
-        });
+        <div class="blog-grid">
+            <article class="blog-card">
+                <div class="blog-card-image">🎨</div>
+                <div class="blog-content">
+                    <div class="tags">
+                        <span class="tag">Diseño</span>
+                    </div>
+                    <h2>Principios de Diseño Web</h2>
+                    <p>Explorando los fundamentos del diseño web moderno y cómo aplicarlos efectivamente.</p>
+                    <a href="https://example.com/diseno-web" class="read-more">Leer más</a>
+                </div>
+            </article>
 
-        // Ocultar el menú al hacer clic en la 'X'
-        document.querySelector('.close-menu').addEventListener('click', function() {
-            const menu = document.getElementById('menu');
-            menu.style.display = 'none'; // Ocultar el menú
-        });
-    </script>
+            <article class="blog-card">
+                <div class="blog-card-image">💻</div>
+                <div class="blog-content">
+                    <div class="tags">
+                        <span class="tag">Desarrollo</span>
+                    </div>
+                    <h2>Coding Best Practices</h2>
+                    <p>Tips y trucos para escribir código limpio y mantenible en tus proyectos.</p>
+                    <a href="https://example.com/coding-practices" class="read-more">Leer más</a>
+                </div>
+            </article>
 
-</body>
-</html>
+            <article class="blog-card">
+                <div class="blog-card-image">🚀</div>
+                <div class="blog-content">
+                    <div class="tags">
+                        <span class="tag">Productividad</span>
+                    </div>
+                    <h2>Optimización de Workflow</h2>
+                    <p>Mejora tu productividad con estas técnicas probadas de gestión del tiempo.</p>
+                    <a href="https://example.com/productividad" class="read-more">Leer más</a>
+                </div>
+            </article>
+
+            <article class="blog-card">
+                <div class="blog-card-image">🎯</div>
+                <div class="blog-content">
+                    <div class="tags">
+                        <span class="tag">Marketing</span>
+                    </div>
+                    <h2>Estrategias Digitales</h2>
+                    <p>Aprende a crear estrategias efectivas para tu presencia digital.</p>
+                    <a href="https://example.com/marketing-digital" class="read-more">Leer más</a>
+                </div>
+            </article>
+        </div>
+    </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const hamburger = document.querySelector('.hamburger');
+    const menu = document.querySelector('.menu');
+    const loginBtn = document.querySelector('.login-btn');
+    const loginModal = document.querySelector('.login-modal');
+    const overlay = document.querySelector('.overlay');
+    const closeModal = document.querySelector('.close-modal');
+    const loginForm = document.getElementById('login-form');
+
+    hamburger.addEventListener('click', function() {
+        this.classList.toggle('active');
+        menu.classList.toggle('active');
+    });
+
+    loginBtn.addEventListener('click', function() {
+        loginModal.classList.add('active');
+        overlay.classList.add('active');
+    });
+
+    closeModal.addEventListener('click', function() {
+        loginModal.classList.remove('active');
+        overlay.classList.remove('active');
+    });
+
+    overlay.addEventListener('click', function() {
+        loginModal.classList.remove('active');
+        this.classList.remove('active');
+    });
+
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        
+        console.log('Usuario:', username, 'Contraseña:', password);
+        
+        alert('Login exitoso!');
+        loginModal.classList.remove('active');
+        overlay.classList.remove('active');
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!menu.contains(e.target) && !hamburger.contains(e.target) && menu.classList.contains('active')) {
+            menu.classList.remove('active');
+            hamburger.classList.remove('active');
+        }
+    });
+});
+</script>
+</body></html>
