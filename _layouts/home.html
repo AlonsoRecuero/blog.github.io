@@ -3,12 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Firebase Test</title>
-    <!-- Firebase App (base SDK) -->
+    <title>Mi Blog</title>
+    <style>
+        /* Estilos generales */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f8f0ff;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 15px rgba(106, 17, 203, 0.2);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .login-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .main-content {
+            margin-top: 100px;
+            padding: 40px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .main-content h1 {
+            color: #6a11cb;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .register-form {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin: 40px auto;
+            max-width: 400px;
+        }
+
+        .register-form h2 {
+            color: #6a11cb;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <button class="login-btn">Login</button>
+    </header>
+
+    <main class="main-content">
+        <h1>Bienvenido a Mi Blog</h1>
+        
+        <!-- Formulario de Registro -->
+        <div class="register-form">
+            <h2>Registrarse</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="reg-username">Usuario:</label>
+                    <input type="text" id="reg-username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Correo electrónico:</label>
+                    <input type="email" id="reg-email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Contraseña:</label>
+                    <input type="password" id="reg-password" name="password" required>
+                </div>
+                <button type="submit" class="submit-btn">Registrar</button>
+            </form>
+        </div>
+        <!-- Fin del Formulario de Registro -->
+    </main>
+
+    <!-- Incluir Firebase SDK -->
     <script type="module">
-        // Importar las librerías necesarias desde el CDN
+        // Importar las funciones necesarias desde el SDK de Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
         // Configuración de Firebase
         const firebaseConfig = {
@@ -24,51 +167,32 @@
 
         // Inicializar Firebase
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
 
-        // Referencia al documento en Firestore
-        const docRef = doc(db, "pruebas", "contador");
+        // Manejar el registro de usuarios
+        const registerForm = document.getElementById("register-form");
 
-        // Función para obtener el valor actual
-        async function obtenerValor() {
-            try {
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists()) {
-                    document.getElementById("valorActual").innerText = docSnap.data().valor;
-                } else {
-                    console.log("El documento no existe. Creando uno nuevo...");
-                    await setDoc(docRef, { valor: 0 });
-                    document.getElementById("valorActual").innerText = 0;
-                }
-            } catch (error) {
-                console.error("Error obteniendo el documento:", error);
-            }
-        }
+        registerForm.addEventListener("submit", (e) => {
+            e.preventDefault();
 
-        // Función para incrementar el valor
-        async function incrementarValor() {
-            try {
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists()) {
-                    const nuevoValor = docSnap.data().valor + 1;
-                    await updateDoc(docRef, { valor: nuevoValor });
-                    document.getElementById("valorActual").innerText = nuevoValor;
-                }
-            } catch (error) {
-                console.error("Error incrementando el valor:", error);
-            }
-        }
+            const email = document.getElementById("reg-email").value;
+            const password = document.getElementById("reg-password").value;
 
-        // Configurar el evento del botón
-        document.addEventListener("DOMContentLoaded", () => {
-            document.getElementById("incrementar").addEventListener("click", incrementarValor);
-            obtenerValor();
+            // Crear un nuevo usuario con correo electrónico y contraseña
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    alert("Usuario registrado con éxito!");
+                    // Aquí puedes redirigir al usuario a la página principal o a un área de inicio de sesión
+                    // window.location.href = "home.html"; // Por ejemplo, redirigir al home.
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    alert("Error al registrar: " + errorMessage);
+                });
         });
     </script>
-</head>
-<body>
-    <h1>Prueba de Firebase</h1>
-    <p>Cuantas colas se come dani al dia?: <span id="valorActual">Cargando...</span></p>
-    <button id="incrementar">Incrementar</button>
 </body>
 </html>
