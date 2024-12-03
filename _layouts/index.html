@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Blog - Registro/Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <h1>Bienvenido a Mi Blog</h1>
+        
+        <!-- Formulario de Registro -->
+        <div class="register-form">
+            <h2>Registrarse</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="reg-email">Correo electrónico:</label>
+                    <input type="email" id="reg-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Contraseña:</label>
+                    <input type="password" id="reg-password" required>
+                </div>
+                <button type="submit" class="submit-btn">Registrar</button>
+            </form>
+        </div>
+
+        <!-- Formulario de Login -->
+        <div class="register-form">
+            <h2>Iniciar Sesión</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Correo electrónico:</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Contraseña:</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="submit-btn">Iniciar Sesión</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Firebase JS SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCxx1Oy3IVOzYPYggilV5okWyozPnw08QQ",
+            authDomain: "web-blog-e36f9.firebaseapp.com",
+            projectId: "web-blog-e36f9",
+            storageBucket: "web-blog-e36f9.appspot.com",
+            messagingSenderId: "851452791419",
+            appId: "1:851452791419:web:6a748bcbad7bfeba4a30de"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Registro
+        const registerForm = document.getElementById("register-form");
+        registerForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const email = document.getElementById("reg-email").value;
+            const password = document.getElementById("reg-password").value;
+
+            createUserWithEmailAndPassword(auth, email, password)
+                .then(() => alert("Usuario registrado con éxito!"))
+                .catch((error) => alert("Error: " + error.message));
+        });
+
+        // Login
+        const loginForm = document.getElementById("login-form");
+        loginForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const email = document.getElementById("login-email").value;
+            const password = document.getElementById("login-password").value;
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then(() => {
+                    alert("Inicio de sesión exitoso!");
+                    window.location.href = "home.html";
+                })
+                .catch((error) => alert("Error: " + error.message));
+        });
+
+        // Verificar si el usuario ya está logueado
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.location.href = "home.html";
+            }
+        });
+    </script>
+</body>
+</html>
