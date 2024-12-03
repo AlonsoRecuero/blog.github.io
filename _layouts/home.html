@@ -38,7 +38,7 @@
             margin-right: auto;
         }
 
-        .register-form {
+        .form-container {
             background: white;
             padding: 30px;
             border-radius: 15px;
@@ -75,6 +75,16 @@
         .submit-btn:hover {
             box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
         }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: #2575fc;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -82,8 +92,8 @@
         <h1>Mi Blog</h1>
     </header>
     <main class="main-content">
-        <div class="register-form">
-            <h2>Registrarse</h2>
+        <div class="form-container" id="auth-form">
+            <h2 id="form-title">Registrarse</h2>
             <form id="register-form">
                 <div class="form-group">
                     <label for="email">Correo Electrónico:</label>
@@ -95,26 +105,45 @@
                 </div>
                 <button type="submit" class="submit-btn">Registrarse</button>
             </form>
+            <button class="toggle-btn" id="toggle-btn">¿Ya tienes cuenta? Iniciar sesión</button>
+        </div>
+
+        <div class="form-container" id="login-form" style="display: none;">
+            <h2>Iniciar sesión</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Correo Electrónico:</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Contraseña:</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="submit-btn">Iniciar sesión</button>
+            </form>
+            <button class="toggle-btn" id="toggle-login-btn">¿No tienes cuenta? Registrarse</button>
         </div>
     </main>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCxx1Oy3IVOzYPYggilV5okWyozPnw08QQ",
-    authDomain: "web-blog-e36f9.firebaseapp.com",
-    databaseURL: "https://web-blog-e36f9-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "web-blog-e36f9",
-    storageBucket: "web-blog-e36f9.firebasestorage.app",
-    messagingSenderId: "851452791419",
-    appId: "1:851452791419:web:6a748bcbad7bfeba4a30de",
-    measurementId: "G-F1WXKQPL6S"
-  };
+        const firebaseConfig = {
+            apiKey: "AIzaSyCxx1Oy3IVOzYPYggilV5okWyozPnw08QQ",
+            authDomain: "web-blog-e36f9.firebaseapp.com",
+            databaseURL: "https://web-blog-e36f9-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "web-blog-e36f9",
+            storageBucket: "web-blog-e36f9.firebasestorage.app",
+            messagingSenderId: "851452791419",
+            appId: "1:851452791419:web:6a748bcbad7bfeba4a30de",
+            measurementId: "G-F1WXKQPL6S"
+        };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
+        // Registro
         document.getElementById('register-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
@@ -123,6 +152,34 @@
             createUserWithEmailAndPassword(auth, email, password)
                 .then(() => alert('Registro exitoso.'))
                 .catch((error) => alert('Error: ' + error.message));
+        });
+
+        // Iniciar sesión
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then(() => alert('Inicio de sesión exitoso.'))
+                .catch((error) => alert('Error: ' + error.message));
+        });
+
+        // Alternar entre formularios de registro e inicio de sesión
+        const toggleBtn = document.getElementById('toggle-btn');
+        const toggleLoginBtn = document.getElementById('toggle-login-btn');
+        const authForm = document.getElementById('auth-form');
+        const loginForm = document.getElementById('login-form');
+        const formTitle = document.getElementById('form-title');
+
+        toggleBtn.addEventListener('click', () => {
+            authForm.style.display = 'none';
+            loginForm.style.display = 'block';
+        });
+
+        toggleLoginBtn.addEventListener('click', () => {
+            loginForm.style.display = 'none';
+            authForm.style.display = 'block';
         });
     </script>
 </body>
