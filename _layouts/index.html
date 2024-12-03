@@ -1,10 +1,71 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <base href="." />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Blog - Registro/Login</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Mi Blog</title>
+    <style>
+        /* Tus estilos CSS originales aquí */
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"></script>
+    <script>
+        // Configuración Firebase
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY",
+            authDomain: "TU_DOMINIO.firebaseapp.com",
+            projectId: "TU_PROJECT_ID",
+            storageBucket: "TU_BUCKET.appspot.com",
+            messagingSenderId: "TU_MESSAGING_ID",
+            appId: "TU_APP_ID"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        const auth = firebase.auth();
+
+        // Verificar autenticación al cargar la página
+        document.addEventListener("DOMContentLoaded", () => {
+            auth.onAuthStateChanged((user) => {
+                const loginModal = document.querySelector(".login-modal");
+                const mainContent = document.querySelector(".main-content");
+
+                if (user) {
+                    // Usuario autenticado
+                    loginModal.style.display = "none";
+                    mainContent.style.display = "block";
+                    console.log(`Usuario autenticado: ${user.email}`);
+                } else {
+                    // Usuario no autenticado
+                    loginModal.style.display = "block";
+                    mainContent.style.display = "none";
+                }
+            });
+        });
+
+        // Manejar inicio de sesión
+        function login(event) {
+            event.preventDefault();
+            const email = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    alert("Inicio de sesión exitoso");
+                })
+                .catch((error) => {
+                    alert("Error al iniciar sesión: " + error.message);
+                });
+        }
+
+        // Manejar cierre de sesión
+        function logout() {
+            auth.signOut()
+                .then(() => {
+                    alert("Cierre de sesión exitoso");
+                });
+        }
+    </script>
 </head>
 <body>
     <header class="header">
@@ -13,94 +74,147 @@
             <span></span>
             <span></span>
         </div>
+        <button class="login-btn" onclick="logout()">Logout</button>
     </header>
 
-    <main class="main-content">
+    <nav class="menu">
+        <ul>
+            <li><a href="https://example.com/inicio">Inicio</a></li>
+            <li><a href="https://example.com/articulos">Artículos</a></li>
+            <li><a href="https://example.com/categorias">Categorías</a></li>
+            <li><a href="https://example.com/sobre-mi">Sobre Mí</a></li>
+            <li><a href="https://example.com/contacto">Contacto</a></li>
+        </ul>
+    </nav>
+
+    <div class="login-modal">
+        <span class="close-modal">×</span>
+        <h2>Iniciar Sesión</h2>
+        <form id="login-form" onsubmit="login(event)">
+            <div class="form-group">
+                <label for="username">Usuario:</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit" class="login-btn">Entrar</button>
+        </form>
+    </div>
+
+    <main class="main-content" style="display: none;">
         <h1>Bienvenido a Mi Blog</h1>
-        
-        <!-- Formulario de Registro -->
-        <div class="register-form">
-            <h2>Registrarse</h2>
-            <form id="register-form">
-                <div class="form-group">
-                    <label for="reg-email">Correo electrónico:</label>
-                    <input type="email" id="reg-email" required>
-                </div>
-                <div class="form-group">
-                    <label for="reg-password">Contraseña:</label>
-                    <input type="password" id="reg-password" required>
-                </div>
-                <button type="submit" class="submit-btn">Registrar</button>
-            </form>
+        <div class="featured-post">
+            <h2>Post Destacado</h2>
+            <div class="tags">
+                <span class="tag">Tecnología</span>
+                <span class="tag">Innovación</span>
+            </div>
+            <p>Descubre las últimas tendencias en desarrollo web y tecnología. Un viaje a través de las innovaciones que están cambiando el mundo digital.</p>
+            <a href="https://example.com/post-destacado" class="read-more">Leer más</a>
         </div>
 
-        <!-- Formulario de Login -->
-        <div class="register-form">
-            <h2>Iniciar Sesión</h2>
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="login-email">Correo electrónico:</label>
-                    <input type="email" id="login-email" required>
+        <div class="blog-grid">
+            <article class="blog-card">
+                <div class="blog-card-image">🎨</div>
+                <div class="blog-content">
+                    <div class="tags">
+                        <span class="tag">Diseño</span>
+                    </div>
+                    <h2>Principios de Diseño Web</h2>
+                    <p>Explorando los fundamentos del diseño web moderno y cómo aplicarlos efectivamente.</p>
+                    <a href="https://example.com/diseno-web" class="read-more">Leer más</a>
                 </div>
-                <div class="form-group">
-                    <label for="login-password">Contraseña:</label>
-                    <input type="password" id="login-password" required>
+            </article>
+
+            <article class="blog-card">
+                <div class="blog-card-image">💻</div>
+                <div class="blog-content">
+                    <div class="tags">
+                        <span class="tag">Desarrollo</span>
+                    </div>
+                    <h2>Coding Best Practices</h2>
+                    <p>Tips y trucos para escribir código limpio y mantenible en tus proyectos.</p>
+                    <a href="https://example.com/coding-practices" class="read-more">Leer más</a>
                 </div>
-                <button type="submit" class="submit-btn">Iniciar Sesión</button>
-            </form>
+            </article>
+
+            <article class="blog-card">
+                <div class="blog-card-image">🚀</div>
+                <div class="blog-content">
+                    <div class="tags">
+                        <span class="tag">Productividad</span>
+                    </div>
+                    <h2>Optimización de Workflow</h2>
+                    <p>Mejora tu productividad con estas técnicas probadas de gestión del tiempo.</p>
+                    <a href="https://example.com/productividad" class="read-more">Leer más</a>
+                </div>
+            </article>
+
+            <article class="blog-card">
+                <div class="blog-card-image">🎯</div>
+                <div class="blog-content">
+                    <div class="tags">
+                        <span class="tag">Marketing</span>
+                    </div>
+                    <h2>Estrategias Digitales</h2>
+                    <p>Aprende a crear estrategias efectivas para tu presencia digital.</p>
+                    <a href="https://example.com/marketing-digital" class="read-more">Leer más</a>
+                </div>
+            </article>
         </div>
     </main>
 
-    <!-- Firebase JS SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const hamburger = document.querySelector('.hamburger');
+    const menu = document.querySelector('.menu');
+    const loginBtn = document.querySelector('.login-btn');
+    const loginModal = document.querySelector('.login-modal');
+    const overlay = document.querySelector('.overlay');
+    const closeModal = document.querySelector('.close-modal');
+    const loginForm = document.getElementById('login-form');
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCxx1Oy3IVOzYPYggilV5okWyozPnw08QQ",
-            authDomain: "web-blog-e36f9.firebaseapp.com",
-            projectId: "web-blog-e36f9",
-            storageBucket: "web-blog-e36f9.appspot.com",
-            messagingSenderId: "851452791419",
-            appId: "1:851452791419:web:6a748bcbad7bfeba4a30de"
-        };
+    hamburger.addEventListener('click', function() {
+        this.classList.toggle('active');
+        menu.classList.toggle('active');
+    });
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+    loginBtn.addEventListener('click', function() {
+        loginModal.classList.add('active');
+        overlay.classList.add('active');
+    });
 
-        // Registro
-        const registerForm = document.getElementById("register-form");
-        registerForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const email = document.getElementById("reg-email").value;
-            const password = document.getElementById("reg-password").value;
+    closeModal.addEventListener('click', function() {
+        loginModal.classList.remove('active');
+        overlay.classList.remove('active');
+    });
 
-            createUserWithEmailAndPassword(auth, email, password)
-                .then(() => alert("Usuario registrado con éxito!"))
-                .catch((error) => alert("Error: " + error.message));
-        });
+    overlay.addEventListener('click', function() {
+        loginModal.classList.remove('active');
+        this.classList.remove('active');
+    });
 
-        // Login
-        const loginForm = document.getElementById("login-form");
-        loginForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const email = document.getElementById("login-email").value;
-            const password = document.getElementById("login-password").value;
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        
+        console.log('Usuario:', username, 'Contraseña:', password);
+        
+        alert('Login exitoso!');
+        loginModal.classList.remove('active');
+        overlay.classList.remove('active');
+    });
 
-            signInWithEmailAndPassword(auth, email, password)
-                .then(() => {
-                    alert("Inicio de sesión exitoso!");
-                    window.location.href = "home.html";
-                })
-                .catch((error) => alert("Error: " + error.message));
-        });
+    document.addEventListener('click', function(e) {
+        if (!menu.contains(e.target) && !hamburger.contains(e.target) && menu.classList.contains('active')) {
+            menu.classList.remove('active');
+            hamburger.classList.remove('active');
+        }
+    });
+});
+</script>
+</body></html>
 
-        // Verificar si el usuario ya está logueado
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                window.location.href = "home.html";
-            }
-        });
-    </script>
-</body>
-</html>
