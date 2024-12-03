@@ -1,62 +1,198 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Autenticación Firebase</title>
-  <script type="module">
-    // Importar las funciones necesarias de los SDKs
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-
-    // Tu configuración de Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyCxx1Oy3IVOzYPYggilV5okWyozPnw08QQ",
-      authDomain: "web-blog-e36f9.firebaseapp.com",
-      databaseURL: "https://web-blog-e36f9-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "web-blog-e36f9",
-      storageBucket: "web-blog-e36f9.firebasestorage.app",
-      messagingSenderId: "851452791419",
-      appId: "1:851452791419:web:6a748bcbad7bfeba4a30de",
-      measurementId: "G-F1WXKQPL6S"
-    };
-
-    // Inicializar Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    document.addEventListener("DOMContentLoaded", () => {
-      // Referencias a los elementos del DOM
-      const emailInput = document.getElementById("email");
-      const passwordInput = document.getElementById("password");
-      const loginButton = document.getElementById("loginButton");
-      const messageDiv = document.getElementById("message");
-
-      // Lógica de inicio de sesión
-      loginButton.addEventListener("click", async () => {
-        const email = emailInput.value;
-        const password = passwordInput.value;
-
-        try {
-          messageDiv.style.display = "block"; // Mostrar mensaje de autenticación
-          await signInWithEmailAndPassword(auth, email, password);
-          // Redirigir a la página que especificaste
-          window.location.href = "https://tupaginaweb.com"; // Cambia esta URL por la tuya
-        } catch (error) {
-          alert("Error de autenticación: " + error.message);
-          messageDiv.style.display = "none"; // Ocultar mensaje en caso de error
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Blog</title>
+    <style>
+        /* Estilos generales */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
         }
-      });
-    });
-  </script>
+
+        body {
+            background-color: #f8f0ff;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 15px rgba(106, 17, 203, 0.2);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .login-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .main-content {
+            margin-top: 100px;
+            padding: 40px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .main-content h1 {
+            color: #6a11cb;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .register-form {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin: 40px auto;
+            max-width: 400px;
+        }
+
+        .register-form h2 {
+            color: #6a11cb;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+        }
+    </style>
 </head>
 <body>
-  <h1>Inicio de Sesión</h1>
-  <div id="login">
-    <input type="email" id="email" placeholder="Correo electrónico" required>
-    <input type="password" id="password" placeholder="Contraseña" required>
-    <button id="loginButton">Iniciar Sesión</button>
-  </div>
-  <div id="message" style="display: none;">Autenticando...</div>
+    <header class="header">
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <button class="login-btn">Login</button>
+    </header>
+
+    <main class="main-content">
+        <h1>Bienvenido a Mi Blog</h1>
+        
+        <!-- Formulario de Registro -->
+        <div class="register-form">
+            <h2>Registrarse</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="reg-username">Usuario:</label>
+                    <input type="text" id="reg-username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Correo electrónico:</label>
+                    <input type="email" id="reg-email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Contraseña:</label>
+                    <input type="password" id="reg-password" name="password" required>
+                </div>
+                <button type="submit" class="submit-btn">Registrar</button>
+            </form>
+        </div>
+        <!-- Fin del Formulario de Registro -->
+    </main>
+
+    <!-- Incluir Firebase SDK -->
+    <script type="module">
+        // Importar las funciones necesarias desde el SDK de Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCxx1Oy3IVOzYPYggilV5okWyozPnw08QQ",
+            authDomain: "web-blog-e36f9.firebaseapp.com",
+            databaseURL: "https://web-blog-e36f9-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "web-blog-e36f9",
+            storageBucket: "web-blog-e36f9.firebasestorage.app",
+            messagingSenderId: "851452791419",
+            appId: "1:851452791419:web:6a748bcbad7bfeba4a30de",
+            measurementId: "G-F1WXKQPL6S"
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+
+        // Manejar el registro de usuarios
+        const registerForm = document.getElementById("register-form");
+
+        registerForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById("reg-email").value;
+            const password = document.getElementById("reg-password").value;
+
+            // Crear un nuevo usuario con correo electrónico y contraseña
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    alert("Usuario registrado con éxito!");
+                    // Aquí puedes redirigir al usuario a la página principal o a un área de inicio de sesión
+                    // window.location.href = "home.html"; // Por ejemplo, redirigir al home.
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    alert("Error al registrar: " + errorMessage);
+                });
+        });
+    </script>
 </body>
 </html>
