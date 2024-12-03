@@ -5,45 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Firebase Test</title>
     <!-- Firebase App (base SDK) -->
-    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js"></script>
-    <!-- Firebase Firestore -->
-    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-firestore.js"></script>
-</head>
-<body>
-    <h1>Prueba de Firebase</h1>
-    <p>Valor actual: <span id="valorActual">Cargando...</span></p>
-    <button id="incrementar">Incrementar</button>
+    <script type="module">
+        // Importar las librerías necesarias desde el CDN
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
-    <script>
         // Configuración de Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyCxx1Oy3IVOzYPYggilV5okWyozPnw08QQ",
             authDomain: "web-blog-e36f9.firebaseapp.com",
             databaseURL: "https://web-blog-e36f9-default-rtdb.europe-west1.firebasedatabase.app",
             projectId: "web-blog-e36f9",
-            storageBucket: "web-blog-e36f9.appspot.com",
+            storageBucket: "web-blog-e36f9.firebasestorage.app",
             messagingSenderId: "851452791419",
             appId: "1:851452791419:web:6a748bcbad7bfeba4a30de",
             measurementId: "G-F1WXKQPL6S"
         };
 
         // Inicializar Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-        // Referencia al documento de prueba
-        const docRef = db.collection("pruebas").doc("contador");
+        // Referencia al documento en Firestore
+        const docRef = doc(db, "pruebas", "contador");
 
-        // Actualizar el valor mostrado en la página
+        // Función para obtener el valor actual
         async function obtenerValor() {
             try {
-                const doc = await docRef.get();
-                if (doc.exists) {
-                    document.getElementById("valorActual").innerText = doc.data().valor;
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    document.getElementById("valorActual").innerText = docSnap.data().valor;
                 } else {
-                    console.log("El documento no existe.");
-                    // Crear el documento si no existe
-                    await docRef.set({ valor: 0 });
+                    console.log("El documento no existe. Creando uno nuevo...");
+                    await setDoc(docRef, { valor: 0 });
                     document.getElementById("valorActual").innerText = 0;
                 }
             } catch (error) {
@@ -51,13 +45,13 @@
             }
         }
 
-        // Incrementar el valor en Firestore
+        // Función para incrementar el valor
         async function incrementarValor() {
             try {
-                const doc = await docRef.get();
-                if (doc.exists) {
-                    const nuevoValor = doc.data().valor + 1;
-                    await docRef.update({ valor: nuevoValor });
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const nuevoValor = docSnap.data().valor + 1;
+                    await updateDoc(docRef, { valor: nuevoValor });
                     document.getElementById("valorActual").innerText = nuevoValor;
                 }
             } catch (error) {
@@ -65,11 +59,16 @@
             }
         }
 
-        // Configurar el botón
-        document.getElementById("incrementar").addEventListener("click", incrementarValor);
-
-        // Obtener el valor actual al cargar la página
-        obtenerValor();
+        // Configurar el evento del botón
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("incrementar").addEventListener("click", incrementarValor);
+            obtenerValor();
+        });
     </script>
+</head>
+<body>
+    <h1>Prueba de Firebase</h1>
+    <p>Valor actual: <span id="valorActual">Cargando...</span></p>
+    <button id="incrementar">Incrementar</button>
 </body>
 </html>
