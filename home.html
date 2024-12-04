@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crear una nueva entrada</title>
+  <title>Crear Entrada</title>
   <!-- Importar Firebase y Firestore -->
   <script type="module">
     // Importar las funciones necesarias de Firebase SDK
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
 
     // Configuración de Firebase
@@ -29,22 +29,17 @@
     const analytics = getAnalytics(app);
 
     // Función para guardar la entrada en Firestore
-    async function saveEntry(title, content, timestamp) {
+    async function saveEntry(title, body, date) {
       try {
-        // Asegurarse de que los campos no estén vacíos
-        if (!title || !content || !timestamp) {
-          throw new Error("Todos los campos deben ser completados.");
-        }
-
-        const docRef = await addDoc(collection(db, "posts"), {
+        const docRef = await addDoc(collection(db, "entries"), {
           title: title,
-          content: content,
-          timestamp: Timestamp.fromDate(new Date(timestamp)) // Convertir la fecha a formato Timestamp
+          body: body,
+          date: date
         });
         alert("Entrada guardada con ID: " + docRef.id);
       } catch (e) {
         console.error("Error al agregar el documento: ", e);
-        alert("Error al guardar la entrada: " + e.message);
+        alert("Error al guardar la entrada.");
       }
     }
 
@@ -53,39 +48,15 @@
       event.preventDefault();
       
       // Obtener los valores del formulario
-      const title = document.getElementById("title").value.trim();
-      const content = document.getElementById("body").value.trim();
-      const timestamp = document.getElementById("date").value;
-      
-      let isValid = true;
+      const title = document.getElementById("title").value;
+      const body = document.getElementById("body").value;
+      const date = document.getElementById("date").value;
 
-      // Validaciones de campos con mensajes de error
-      if (!title) {
-        isValid = false;
-        document.getElementById("titleError").textContent = "El título es obligatorio.";
-      } else {
-        document.getElementById("titleError").textContent = "";
-      }
+      // Llamar a la función para guardar los datos en Firestore
+      saveEntry(title, body, date);
 
-      if (!content) {
-        isValid = false;
-        document.getElementById("contentError").textContent = "El cuerpo de la entrada es obligatorio.";
-      } else {
-        document.getElementById("contentError").textContent = "";
-      }
-
-      if (!timestamp) {
-        isValid = false;
-        document.getElementById("dateError").textContent = "Por favor, seleccione una fecha.";
-      } else {
-        document.getElementById("dateError").textContent = "";
-      }
-
-      // Si todos los campos son válidos, proceder con la guardada
-      if (isValid) {
-        saveEntry(title, content, timestamp);
-        document.getElementById("entryForm").reset(); // Limpiar el formulario
-      }
+      // Limpiar el formulario después de enviar
+      document.getElementById("entryForm").reset();
     });
   </script>
 </head>
@@ -97,19 +68,16 @@
     <div>
       <label for="title">Título:</label>
       <input type="text" id="title" name="title" required />
-      <div id="titleError" style="color: red;"></div> <!-- Error de título -->
     </div>
     
     <div>
       <label for="body">Cuerpo:</label>
       <textarea id="body" name="body" rows="4" required></textarea>
-      <div id="contentError" style="color: red;"></div> <!-- Error de cuerpo -->
     </div>
     
     <div>
       <label for="date">Fecha:</label>
       <input type="date" id="date" name="date" required />
-      <div id="dateError" style="color: red;"></div> <!-- Error de fecha -->
     </div>
     
     <button type="submit">Crear Entrada</button>
