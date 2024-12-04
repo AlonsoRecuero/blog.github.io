@@ -4,166 +4,132 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Blog</title>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCxx1Oy3IVOzYPYggilV5okWyozPnw08QQ",
+            authDomain: "web-blog-e36f9.firebaseapp.com",
+            databaseURL: "https://web-blog-e36f9-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "web-blog-e36f9",
+            storageBucket: "web-blog-e36f9.firebasestorage.app",
+            messagingSenderId: "851452791419",
+            appId: "1:851452791419:web:6a748bcbad7bfeba4a30de",
+            measurementId: "G-F1WXKQPL6S"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Function to add a new post
+        async function createPost(title, content) {
+            try {
+                await addDoc(collection(db, "posts"), {
+                    title: title,
+                    content: content,
+                    createdAt: new Date()
+                });
+                alert("Publicación creada exitosamente.");
+                displayPosts();
+            } catch (error) {
+                console.error("Error al crear la publicación:", error);
+                alert("No se pudo crear la publicación. Revisa la consola para más detalles.");
+            }
+        }
+
+        // Function to fetch and display all posts
+        async function displayPosts() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "posts"));
+                const postsContainer = document.getElementById("posts-container");
+                postsContainer.innerHTML = ""; // Clear existing posts
+                querySnapshot.forEach((doc) => {
+                    const post = doc.data();
+                    const postElement = document.createElement("div");
+                    postElement.classList.add("post");
+                    postElement.innerHTML = `
+                        <h3>${post.title}</h3>
+                        <p>${post.content}</p>
+                        <small>Publicado: ${new Date(post.createdAt.seconds * 1000).toLocaleString()}</small>
+                    `;
+                    postsContainer.appendChild(postElement);
+                });
+            } catch (error) {
+                console.error("Error al cargar las publicaciones:", error);
+                alert("No se pudieron cargar las publicaciones. Revisa la consola para más detalles.");
+            }
+        }
+
+        // Add event listener for the form
+        document.addEventListener("DOMContentLoaded", () => {
+            const postForm = document.getElementById("post-form");
+            postForm.addEventListener("submit", (event) => {
+                event.preventDefault();
+                const title = document.getElementById("post-title").value;
+                const content = document.getElementById("post-content").value;
+
+                if (title.trim() === "" || content.trim() === "") {
+                    alert("Por favor, completa todos los campos.");
+                    return;
+                }
+
+                createPost(title, content);
+                postForm.reset();
+            });
+
+            // Display existing posts on page load
+            displayPosts();
+        });
+    </script>
     <style>
-        /* Estilos base */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
+        /* Estilos para posts */
+        .post {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background: #fff;
         }
 
-        body {
-            background-color: #f8f0ff;
+        .post h3 {
+            margin-bottom: 5px;
         }
 
-        /* Encabezado */
-        .header {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 15px rgba(106, 17, 203, 0.2);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
+        .post small {
+            color: #777;
         }
 
-        /* Botón de logout */
-        .login-btn {
-            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
-        }
-
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
-        }
-
-        /* Botón de hamburguesa */
-        .hamburger {
-            width: 30px;
-            height: 25px;
-            position: relative;
-            cursor: pointer;
-        }
-
-        .hamburger span {
-            display: block;
-            position: absolute;
-            height: 3px;
-            width: 100%;
-            background: #ffffff;
-            border-radius: 3px;
-            transition: all 0.4s ease;
-        }
-
-        .hamburger span:nth-child(1) { top: 0px; }
-        .hamburger span:nth-child(2) { top: 10px; }
-        .hamburger span:nth-child(3) { top: 20px; }
-
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(8px, 8px);
-        }
-
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-            transform: translateX(20px);
-        }
-
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -7px);
-        }
-
-        /* Menú lateral */
-        .menu {
-            position: fixed;
-            top: 70px;
-            left: -300px;
-            width: 300px;
-            height: calc(100vh - 70px);
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            transition: left 0.4s ease;
-            box-shadow: 2px 0 15px rgba(0,0,0,0.2);
-        }
-
-        .menu.active {
-            left: 0;
-        }
-
-        .menu ul {
-            list-style: none;
-            padding: 20px;
-        }
-
-        .menu ul li {
-            margin: 20px 0;
-            transform: translateX(-20px);
-            opacity: 0;
-            transition: all 0.4s ease;
-        }
-
-        .menu.active ul li {
-            transform: translateX(0);
-            opacity: 1;
-        }
-
-        .menu ul li:nth-child(1) { transition-delay: 0.1s; }
-        .menu ul li:nth-child(2) { transition-delay: 0.2s; }
-        .menu ul li:nth-child(3) { transition-delay: 0.3s; }
-        .menu ul li:nth-child(4) { transition-delay: 0.4s; }
-        .menu ul li:nth-child(5) { transition-delay: 0.5s; }
-
-        .menu ul li a {
-            color: #ffffff;
-            text-decoration: none;
-            font-size: 1.2em;
-            transition: all 0.3s;
-            display: block;
-            padding: 10px 20px;
-            border-radius: 25px;
-        }
-
-        .menu ul li a:hover {
-            background: rgba(255,255,255,0.2);
-            transform: translateX(10px);
-        }
-
-        /* Contenido principal */
-        .main-content {
-            margin-top: 100px;
-            padding: 40px;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .main-content h1 {
-            color: #6a11cb;
-            font-size: 2.5em;
+        /* Formulario de creación */
+        .post-form {
             margin-bottom: 20px;
-            text-align: center;
-            animation: fadeInUp 0.6s ease;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .post-form input, .post-form textarea, .post-form button {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            padding: 10px;
+            font-size: 1em;
+        }
+
+        .post-form button {
+            background-color: #6a11cb;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .post-form button:hover {
+            background-color: #2575fc;
         }
     </style>
 </head>
@@ -190,89 +156,19 @@
     <div class="main-content">
         <h1>Bienvenidos a mi blog</h1>
         
-    <!-- Formulario para crear posts -->
-    <div id="create-post">
-        <h2>Crear nuevo post</h2>
-        <form id="post-form">
-            <input type="text" id="post-title" placeholder="Título del post" required style="display:block; margin-bottom:10px; padding:10px; width:100%;">
-            <textarea id="post-content" placeholder="Contenido del post" required style="display:block; margin-bottom:10px; padding:10px; width:100%; height:100px;"></textarea>
-            <button type="submit" style="padding:10px 20px; background: #6a11cb; color: #fff; border: none; border-radius: 5px;">Publicar</button>
-        </form>
+        <!-- Formulario para crear publicaciones -->
+        <div class="post-form">
+            <h2>Crear Nueva Publicación</h2>
+            <form id="post-form">
+                <input type="text" id="post-title" placeholder="Título" required>
+                <textarea id="post-content" placeholder="Contenido" rows="5" required></textarea>
+                <button type="submit">Publicar</button>
+            </form>
+        </div>
+
+        <!-- Contenedor para mostrar publicaciones -->
+        <div id="posts-container"></div>
     </div>
-
-    <!-- Listado de posts existentes -->
-    <div id="posts-list" style="margin-top: 40px;">
-        <h2>Posts existentes</h2>
-        <div id="posts-container" style="margin-top: 20px;"></div>
-    </div>
-</div>
-
-<script>
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
-
-    // Inicializa Firebase (asegúrate de incluir el SDK de Firebase en tu proyecto)
-  const firebaseConfig = {
-    apiKey: "AIzaSyCxx1Oy3IVOzYPYggilV5okWyozPnw08QQ",
-    authDomain: "web-blog-e36f9.firebaseapp.com",
-    databaseURL: "https://web-blog-e36f9-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "web-blog-e36f9",
-    storageBucket: "web-blog-e36f9.firebasestorage.app",
-    messagingSenderId: "851452791419",
-    appId: "1:851452791419:web:6a748bcbad7bfeba4a30de",
-    measurementId: "G-F1WXKQPL6S"
-    };
-const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-
-    // Manejar el envío del formulario
-    document.getElementById("post-form").addEventListener("submit", function (e) {
-        e.preventDefault();
-        
-        const title = document.getElementById("post-title").value;
-        const content = document.getElementById("post-content").value;
-
-        if (title && content) {
-            db.collection("posts").add({
-                title: title,
-                content: content,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                alert("Post creado exitosamente");
-                document.getElementById("post-form").reset();
-                loadPosts();
-            }).catch((error) => {
-                console.error("Error al crear el post: ", error);
-            });
-        }
-    });
-
-    // Cargar posts desde Firestore
-    function loadPosts() {
-        const postsContainer = document.getElementById("posts-container");
-        postsContainer.innerHTML = ""; // Limpia la lista existente
-
-        db.collection("posts").orderBy("timestamp", "desc").get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                const post = doc.data();
-                const postElement = document.createElement("div");
-                postElement.style = "margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background: #fff;";
-                postElement.innerHTML = `
-                    <h3>${post.title}</h3>
-                    <p>${post.content}</p>
-                    <small>${post.timestamp?.toDate().toLocaleString() || "Sin fecha"}</small>
-                `;
-                postsContainer.appendChild(postElement);
-            });
-        }).catch((error) => {
-            console.error("Error al cargar los posts: ", error);
-        });
-    }
-
-    // Llamar a la función para cargar los posts al inicio
-    loadPosts();
-</script>
-
 
     <script>
         function toggleMenu() {
