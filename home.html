@@ -189,8 +189,90 @@
 
     <div class="main-content">
         <h1>Bienvenidos a mi blog</h1>
-        <!-- Contenido adicional aquí -->
+        
+    <!-- Formulario para crear posts -->
+    <div id="create-post">
+        <h2>Crear nuevo post</h2>
+        <form id="post-form">
+            <input type="text" id="post-title" placeholder="Título del post" required style="display:block; margin-bottom:10px; padding:10px; width:100%;">
+            <textarea id="post-content" placeholder="Contenido del post" required style="display:block; margin-bottom:10px; padding:10px; width:100%; height:100px;"></textarea>
+            <button type="submit" style="padding:10px 20px; background: #6a11cb; color: #fff; border: none; border-radius: 5px;">Publicar</button>
+        </form>
     </div>
+
+    <!-- Listado de posts existentes -->
+    <div id="posts-list" style="margin-top: 40px;">
+        <h2>Posts existentes</h2>
+        <div id="posts-container" style="margin-top: 20px;"></div>
+    </div>
+</div>
+
+<script>
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+
+    // Inicializa Firebase (asegúrate de incluir el SDK de Firebase en tu proyecto)
+  const firebaseConfig = {
+    apiKey: "AIzaSyCxx1Oy3IVOzYPYggilV5okWyozPnw08QQ",
+    authDomain: "web-blog-e36f9.firebaseapp.com",
+    databaseURL: "https://web-blog-e36f9-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "web-blog-e36f9",
+    storageBucket: "web-blog-e36f9.firebasestorage.app",
+    messagingSenderId: "851452791419",
+    appId: "1:851452791419:web:6a748bcbad7bfeba4a30de",
+    measurementId: "G-F1WXKQPL6S"
+    };
+const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+
+    // Manejar el envío del formulario
+    document.getElementById("post-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        
+        const title = document.getElementById("post-title").value;
+        const content = document.getElementById("post-content").value;
+
+        if (title && content) {
+            db.collection("posts").add({
+                title: title,
+                content: content,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                alert("Post creado exitosamente");
+                document.getElementById("post-form").reset();
+                loadPosts();
+            }).catch((error) => {
+                console.error("Error al crear el post: ", error);
+            });
+        }
+    });
+
+    // Cargar posts desde Firestore
+    function loadPosts() {
+        const postsContainer = document.getElementById("posts-container");
+        postsContainer.innerHTML = ""; // Limpia la lista existente
+
+        db.collection("posts").orderBy("timestamp", "desc").get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                const post = doc.data();
+                const postElement = document.createElement("div");
+                postElement.style = "margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background: #fff;";
+                postElement.innerHTML = `
+                    <h3>${post.title}</h3>
+                    <p>${post.content}</p>
+                    <small>${post.timestamp?.toDate().toLocaleString() || "Sin fecha"}</small>
+                `;
+                postsContainer.appendChild(postElement);
+            });
+        }).catch((error) => {
+            console.error("Error al cargar los posts: ", error);
+        });
+    }
+
+    // Llamar a la función para cargar los posts al inicio
+    loadPosts();
+</script>
+
 
     <script>
         function toggleMenu() {
