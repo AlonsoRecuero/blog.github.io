@@ -1,122 +1,209 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <base href="." />
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi Blog</title>
-  <script type="module">
-    // Importar Firebase
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
-
-    // Configuración de Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyCxx1Oy3IVOzYPYggilV5okWyozPnw08QQ",
-      authDomain: "web-blog-e36f9.firebaseapp.com",
-      databaseURL: "https://web-blog-e36f9-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "web-blog-e36f9",
-      storageBucket: "web-blog-e36f9.appspot.com",
-      messagingSenderId: "851452791419",
-      appId: "1:851452791419:web:6a748bcbad7bfeba4a30de",
-      measurementId: "G-F1WXKQPL6S"
-    };
-
-    // Inicializar Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // Función para guardar un post en Firestore
-    async function savePost(title, content) {
-      try {
-        await addDoc(collection(db, "posts"), {
-          title: title,
-          content: content,
-          date: new Date().toISOString(),
-        });
-        alert("Post guardado exitosamente.");
-        loadPosts(); // Recargar posts después de guardar
-      } catch (error) {
-        console.error("Error al guardar el post: ", error);
-      }
-    }
-
-    // Función para cargar posts desde Firestore
-    async function loadPosts() {
-      const blogGrid = document.getElementById("blogGrid");
-      blogGrid.innerHTML = ""; // Limpiar el contenido actual
-      try {
-        const querySnapshot = await getDocs(collection(db, "posts"));
-        querySnapshot.forEach((doc) => {
-          const post = doc.data();
-          blogGrid.innerHTML += `
-            <div class="blog-card">
-              <div class="blog-content">
-                <h2>${post.title}</h2>
-                <p>${post.content}</p>
-                <p><small>${new Date(post.date).toLocaleString()}</small></p>
-              </div>
-            </div>
-          `;
-        });
-      } catch (error) {
-        console.error("Error al cargar los posts: ", error);
-      }
-    }
-
-    // Manejar el envío del formulario
-    document.addEventListener("DOMContentLoaded", () => {
-      loadPosts(); // Cargar posts al cargar la página
-      const postForm = document.getElementById("postForm");
-      postForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const title = document.getElementById("title").value;
-        const content = document.getElementById("content").value;
-        if (title && content) {
-          savePost(title, content);
-          postForm.reset(); // Limpiar el formulario
-        } else {
-          alert("Por favor, completa todos los campos.");
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Blog</title>
+    <style>
+        /* Estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
         }
-      });
-    });
-  </script>
-  <style>
-    /* Tu CSS aquí (omitido por espacio) */
-  </style>
+
+        body {
+            background-color: #f8f0ff;
+        }
+
+        /* Encabezado */
+        .header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 15px rgba(106, 17, 203, 0.2);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        /* Botón de logout */
+        .login-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        /* Botón de hamburguesa */
+        .hamburger {
+            width: 30px;
+            height: 25px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            display: block;
+            position: absolute;
+            height: 3px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 3px;
+            transition: all 0.4s ease;
+        }
+
+        .hamburger span:nth-child(1) { top: 0px; }
+        .hamburger span:nth-child(2) { top: 10px; }
+        .hamburger span:nth-child(3) { top: 20px; }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* Menú lateral */
+        .menu {
+            position: fixed;
+            top: 70px;
+            left: -300px;
+            width: 300px;
+            height: calc(100vh - 70px);
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            transition: left 0.4s ease;
+            box-shadow: 2px 0 15px rgba(0,0,0,0.2);
+        }
+
+        .menu.active {
+            left: 0;
+        }
+
+        .menu ul {
+            list-style: none;
+            padding: 20px;
+        }
+
+        .menu ul li {
+            margin: 20px 0;
+            transform: translateX(-20px);
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .menu.active ul li {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .menu ul li:nth-child(1) { transition-delay: 0.1s; }
+        .menu ul li:nth-child(2) { transition-delay: 0.2s; }
+        .menu ul li:nth-child(3) { transition-delay: 0.3s; }
+        .menu ul li:nth-child(4) { transition-delay: 0.4s; }
+        .menu ul li:nth-child(5) { transition-delay: 0.5s; }
+
+        .menu ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.2em;
+            transition: all 0.3s;
+            display: block;
+            padding: 10px 20px;
+            border-radius: 25px;
+        }
+
+        .menu ul li a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(10px);
+        }
+
+        /* Contenido principal */
+        .main-content {
+            margin-top: 100px;
+            padding: 40px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .main-content h1 {
+            color: #6a11cb;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
-  <header class="header">
-    <div class="hamburger">
-      <span></span>
-      <span></span>
-      <span></span>
+    <header class="header">
+        <div class="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <button class="login-btn" onclick="logout()">Logout</button>
+    </header>
+
+    <nav class="menu">
+        <ul>
+            <li><a href="#">Inicio</a></li>
+            <li><a href="#">Artículos</a></li>
+            <li><a href="#">Categorías</a></li>
+            <li><a href="#">Sobre Mí</a></li>
+            <li><a href="#">Contacto</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-content">
+        <h1>Bienvenidos a mi blog</h1>
+        <!-- Contenido adicional aquí -->
     </div>
-    <button class="login-btn" onclick="logout()">Logout</button>
-  </header>
 
-  <nav class="menu">
-    <ul>
-      <li><a href="#inicio">Inicio</a></li>
-      <li><a href="#articulos">Artículos</a></li>
-      <li><a href="#categorias">Categorías</a></li>
-      <li><a href="#sobre-mi">Sobre Mí</a></li>
-      <li><a href="#contacto">Contacto</a></li>
-    </ul>
-  </nav>
+    <script>
+        function toggleMenu() {
+            const hamburger = document.querySelector('.hamburger');
+            const menu = document.querySelector('.menu');
+            hamburger.classList.toggle('active');
+            menu.classList.toggle('active');
+        }
 
-  <div class="main-content">
-    <h1>Bienvenidos a mi blog</h1>
-
-    <!-- Formulario para crear posts -->
-    <form id="postForm">
-      <input type="text" id="title" placeholder="Título del post" required />
-      <textarea id="content" placeholder="Contenido del post" required></textarea>
-      <button type="submit">Crear Post</button>
-    </form>
-
-    <!-- Grid para mostrar los posts -->
-    <div class="blog-grid" id="blogGrid"></div>
-  </div>
+        function logout() {
+            localStorage.removeItem('authenticated');
+            window.location.href = "index.html";
+        }
+    </script>
 </body>
 </html>
