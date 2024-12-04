@@ -327,6 +327,19 @@ body {
         </ul>
     </nav>
 
+<script>
+    // Seleccionar los elementos de la hamburguesa y el menú
+    const hamburger = document.querySelector('.hamburger');
+    const menu = document.querySelector('.menu');
+
+    // Añadir evento de clic a la hamburguesa
+    hamburger.addEventListener('click', () => {
+        // Alternar clases 'active' en la hamburguesa y el menú
+        hamburger.classList.toggle('active');
+        menu.classList.toggle('active');
+    });
+</script>
+
     <div class="login-modal">
         <h2>Inicia sesión</h2>
         <input type="text" placeholder="Nombre de usuario" />
@@ -357,4 +370,4 @@ body {
         window.location.href = "index.html";
     }
 </script>
-</body></html>
+</body>g</html>
