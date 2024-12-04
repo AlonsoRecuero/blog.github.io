@@ -301,8 +301,11 @@ body {
     font-size: 0.9em;
 }
 </style>
-	import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-  	import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+ 	import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+  	import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+    	import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+
+
 </head>
 <body>
 <script>
@@ -356,8 +359,65 @@ body {
     measurementId: "G-F1WXKQPL6S"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const analytics = getAnalytics(app);
+
+    // Función para guardar la entrada en Firestore
+    async function saveEntry(title, body, date) {
+      try {
+        const docRef = await addDoc(collection(db, "entries"), {
+          title: title,
+          body: body,
+          date: date
+        });
+        alert("Entrada guardada con ID: " + docRef.id);
+      } catch (e) {
+        console.error("Error al agregar el documento: ", e);
+        alert("Error al guardar la entrada.");
+      }
+    }
+
+    // Manejar el envío del formulario
+    document.getElementById("entryForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      
+      // Obtener los valores del formulario
+      const title = document.getElementById("title").value;
+      const body = document.getElementById("body").value;
+      const date = document.getElementById("date").value;
+
+      // Llamar a la función para guardar los datos en Firestore
+      saveEntry(title, body, date);
+
+      // Limpiar el formulario después de enviar
+      document.getElementById("entryForm").reset();
+    });
+  </script>
+</head>
+<body>
+  <h1>Crear una nueva entrada</h1>
+
+  <!-- Formulario para ingresar la entrada -->
+  <form id="entryForm">
+    <div>
+      <label for="title">Título:</label>
+      <input type="text" id="title" name="title" required />
+    </div>
+    
+    <div>
+      <label for="body">Cuerpo:</label>
+      <textarea id="body" name="body" rows="4" required></textarea>
+    </div>
+    
+    <div>
+      <label for="date">Fecha:</label>
+      <input type="date" id="date" name="date" required />
+    </div>
+    
+    <button type="submit">Crear Entrada</button>
+  </form>
+</body>
 
   // Función para cerrar sesión
   function logout() {
@@ -366,19 +426,19 @@ body {
   }
 
   // Función para crear un post
-  async function createPost(title, content) {
-      try {
-          await addDoc(collection(db, 'posts'), {
-              title,
-              content,
-              timestamp: serverTimestamp()
-          });
-          alert('Post creado exitosamente.');
-          loadPosts(); // Recargar los posts después de crear uno nuevo
-      } catch (error) {
-          console.error('Error al crear el post:', error);
-      }
+async function createPost(title, content) {
+  try {
+    await addDoc(collection(db, "posts"), {
+      title,
+      content,
+      timestamp: new Date(),
+    });
+    alert("Post creado exitosamente");
+    loadPosts();
+  } catch (error) {
+    console.error("Error al crear el post:", error);
   }
+}
 
 
 
