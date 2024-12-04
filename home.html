@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crear Entrada</title>
+  <title>Crear una nueva entrada</title>
   <!-- Importar Firebase y Firestore -->
   <script type="module">
     // Importar las funciones necesarias de Firebase SDK
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
 
     // Configuración de Firebase
@@ -29,12 +29,12 @@
     const analytics = getAnalytics(app);
 
     // Función para guardar la entrada en Firestore
-    async function saveEntry(title, body, date) {
+    async function saveEntry(title, content, timestamp) {
       try {
-        const docRef = await addDoc(collection(db, "entries"), {
+        const docRef = await addDoc(collection(db, "posts"), {
           title: title,
-          body: body,
-          date: date
+          content: content,
+          timestamp: Timestamp.fromDate(new Date(timestamp)) // Convertir la fecha a formato Timestamp
         });
         alert("Entrada guardada con ID: " + docRef.id);
       } catch (e) {
@@ -49,11 +49,11 @@
       
       // Obtener los valores del formulario
       const title = document.getElementById("title").value;
-      const body = document.getElementById("body").value;
-      const date = document.getElementById("date").value;
+      const content = document.getElementById("body").value;
+      const timestamp = document.getElementById("date").value;
 
       // Llamar a la función para guardar los datos en Firestore
-      saveEntry(title, body, date);
+      saveEntry(title, content, timestamp);
 
       // Limpiar el formulario después de enviar
       document.getElementById("entryForm").reset();
