@@ -176,8 +176,11 @@
                     alert('Inicio de sesión exitoso.');
                     // Redirigir a index.html después del inicio de sesión
                     window.location.href = "/blog.github.io/home.html";
+		    localStorage.setItem('authenticated', true);
                 })
                 .catch((error) => alert('Error: ' + error.message));
+		localStorage.removeItem('authenticated');
+
         });
 
         // Mostrar el formulario de inicio de sesión
