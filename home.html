@@ -4,13 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Blog</title>
+    <script>
+        // Verificar si el usuario está autenticado
+        const isAuthenticated = localStorage.getItem('authenticated');
+        if (!isAuthenticated) {
+            // Si no está autenticado, redirigir a la página de inicio de sesión
+            window.location.href = "index.html";
+        }
+    </script>
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
-import { getFirestore, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
-import { collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
-
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+        import { getFirestore, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+        import { collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
         // Firebase configuration
         const firebaseConfig = {
@@ -26,17 +33,17 @@ import { collection, addDoc, getDocs, serverTimestamp } from "https://www.gstati
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const db = getFirestore(app);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
 
-// Habilitar persistencia en IndexedDB
-enableIndexedDbPersistence(db).catch((err) => {
-    if (err.code === 'failed-precondition') {
-        console.warn("Persistencia deshabilitada. Asegúrate de que no haya múltiples pestañas abiertas.");
-    } else if (err.code === 'unimplemented') {
-        console.warn("Persistencia no soportada en este navegador.");
-    }
-});
+        // Habilitar persistencia en IndexedDB
+        enableIndexedDbPersistence(db).catch((err) => {
+            if (err.code === 'failed-precondition') {
+                console.warn("Persistencia deshabilitada. Asegúrate de que no haya múltiples pestañas abiertas.");
+            } else if (err.code === 'unimplemented') {
+                console.warn("Persistencia no soportada en este navegador.");
+            }
+        });
 
         // Function to add a new post
         async function createPost(title, content) {
@@ -55,36 +62,35 @@ enableIndexedDbPersistence(db).catch((err) => {
         }
 
         // Function to fetch and display all posts
-       async function displayPosts() {
-    try {
-        const querySnapshot = await getDocs(collection(db, "posts"));
-        const postsContainer = document.getElementById("posts-container");
-        postsContainer.innerHTML = ""; // Limpiar publicaciones existentes
-        if (querySnapshot.empty) {
-            postsContainer.innerHTML = "<p>No hay publicaciones para mostrar.</p>";
-            return;
-        }
-        querySnapshot.forEach((doc) => {
-            const post = doc.data();
-            if (post.title && post.content && post.createdAt) {
-                const postElement = document.createElement("div");
-                postElement.classList.add("post");
-                postElement.innerHTML = `
-                    <h3>${post.title}</h3>
-                    <p>${post.content}</p>
-                    <small>Publicado: ${new Date(post.createdAt.seconds * 1000).toLocaleString()}</small>
-                `;
-                postsContainer.appendChild(postElement);
-            } else {
-                console.warn("Documento con datos inválidos:", doc.id, doc.data());
+        async function displayPosts() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "posts"));
+                const postsContainer = document.getElementById("posts-container");
+                postsContainer.innerHTML = ""; // Limpiar publicaciones existentes
+                if (querySnapshot.empty) {
+                    postsContainer.innerHTML = "<p>No hay publicaciones para mostrar.</p>";
+                    return;
+                }
+                querySnapshot.forEach((doc) => {
+                    const post = doc.data();
+                    if (post.title && post.content && post.createdAt) {
+                        const postElement = document.createElement("div");
+                        postElement.classList.add("post");
+                        postElement.innerHTML = `
+                            <h3>${post.title}</h3>
+                            <p>${post.content}</p>
+                            <small>Publicado: ${new Date(post.createdAt.seconds * 1000).toLocaleString()}</small>
+                        `;
+                        postsContainer.appendChild(postElement);
+                    } else {
+                        console.warn("Documento con datos inválidos:", doc.id, doc.data());
+                    }
+                });
+            } catch (error) {
+                console.error("Error al cargar las publicaciones:", error);
+                alert("Hubo un error al cargar las publicaciones. Revisa la consola para más detalles.");
             }
-        });
-    } catch (error) {
-        console.error("Error al cargar las publicaciones:", error);
-        alert("Hubo un error al cargar las publicaciones. Revisa la consola para más detalles.");
-    }
-}
-
+        }
 
         // Add event listener for the form
         document.addEventListener("DOMContentLoaded", () => {
@@ -108,102 +114,230 @@ enableIndexedDbPersistence(db).catch((err) => {
         });
     </script>
     <style>
-        /* Estilos para posts */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --accent-color: #ff6b6b;
+            --bg-color: #f8f0ff;
+            --button-hover-color: #ff8e8e;
+            --button-text-color: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg-color);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 15px rgba(106, 17, 203, 0.2);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .login-btn {
+            background: linear-gradient(45deg, var(--accent-color), var(--button-hover-color));
+            color: var(--button-text-color);
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .hamburger {
+            width: 30px;
+            height: 25px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            display: block;
+            position: absolute;
+            height: 3px;
+            width: 100%;
+            background: var(--button-text-color);
+            border-radius: 3px;
+            transition: all 0.4s ease;
+        }
+
+        .hamburger span:nth-child(1) { top: 0px; }
+        .hamburger span:nth-child(2) { top: 10px; }
+        .hamburger span:nth-child(3) { top: 20px; }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        .menu {
+            position: fixed;
+            top: 70px;
+            left: -300px;
+            width: 300px;
+            height: calc(100vh - 70px);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            transition: left 0.4s ease;
+            box-shadow: 2px 0 15px rgba(0,0,0,0.2);
+        }
+
+        .menu.active {
+            left: 0;
+        }
+
+        .menu ul {
+            list-style: none;
+            padding: 20px;
+        }
+
+        .menu ul li {
+            margin: 20px 0;
+            transform: translateX(-20px);
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .menu.active ul li {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .menu ul li a {
+            color: var(--button-text-color);
+            text-decoration: none;
+            font-size: 1.2em;
+            transition: all 0.3s;
+            display: block;
+            padding: 10px 20px;
+            border-radius: 25px;
+        }
+
+        .menu ul li a:hover {
+            background: var(--button-hover-color);
+            color: #fff;
+        }
+
+        .content {
+            padding: 5rem 1rem;
+        }
+
         .post {
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            background: #fff;
+            background: #ffffff;
+            margin: 1rem 0;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .post h3 {
-            margin-bottom: 5px;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
         }
 
         .post small {
-            color: #777;
-        }
-
-        /* Formulario de creación */
-        .post-form {
-            margin-bottom: 20px;
-            padding: 10px;
-            background: #f9f9f9;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .post-form input, .post-form textarea, .post-form button {
             display: block;
+            margin-top: 1rem;
+            color: #888;
+        }
+
+        .form-group {
+            margin: 20px 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .form-group input, .form-group textarea {
             width: 100%;
-            margin: 5px 0;
             padding: 10px;
-            font-size: 1em;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
-        .post-form button {
-            background-color: #6a11cb;
+        .form-group button {
+            background-color: var(--primary-color);
             color: white;
+            padding: 10px 20px;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: background-color 0.3s;
         }
 
-        .post-form button:hover {
-            background-color: #2575fc;
+        .form-group button:hover {
+            background-color: var(--secondary-color);
         }
+
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="hamburger" onclick="toggleMenu()">
-            <span></span>
-            <span></span>
-            <span></span>
+
+    <div class="header">
+        <div class="hamburger" onclick="this.classList.toggle('active')">
+            <span></span><span></span><span></span>
         </div>
-        <button class="login-btn" onclick="logout()">Logout</button>
-    </header>
+        <button class="login-btn">Login</button>
+    </div>
 
-    <nav class="menu">
+    <div class="menu">
         <ul>
-            <li><a href="#">Inicio</a></li>
-            <li><a href="#">Artículos</a></li>
-            <li><a href="#">Categorías</a></li>
-            <li><a href="#">Sobre Mí</a></li>
-            <li><a href="#">Contacto</a></li>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Articles</a></li>
+            <li><a href="#">About</a></li>
         </ul>
-    </nav>
+    </div>
 
-    <div class="main-content">
-        <h1>Bienvenidos a mi blog</h1>
-        
-        <!-- Formulario para crear publicaciones -->
-        <div class="post-form">
-            <h2>Crear Nueva Publicación</h2>
+    <div class="content">
+        <h1>Welcome to the Blog!</h1>
+
+        <!-- Form to create a post -->
+        <div class="form-group">
             <form id="post-form">
-                <input type="text" id="post-title" placeholder="Título" required>
-                <textarea id="post-content" placeholder="Contenido" rows="5" required></textarea>
-                <button type="submit">Publicar</button>
+                <label for="post-title">Title:</label>
+                <input type="text" id="post-title" required>
+
+                <label for="post-content">Content:</label>
+                <textarea id="post-content" rows="5" required></textarea>
+
+                <button type="submit">Publish Post</button>
             </form>
         </div>
 
-        <!-- Contenedor para mostrar publicaciones -->
+        <!-- Section to display posts -->
         <div id="posts-container"></div>
     </div>
 
-    <script>
-        function toggleMenu() {
-            const hamburger = document.querySelector('.hamburger');
-            const menu = document.querySelector('.menu');
-            hamburger.classList.toggle('active');
-            menu.classList.toggle('active');
-        }
-
-        function logout() {
-            localStorage.removeItem('authenticated');
-            window.location.href = "index.html";
-        }
-    </script>
 </body>
 </html>
