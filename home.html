@@ -301,6 +301,8 @@ body {
     font-size: 0.9em;
 }
 </style>
+	import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+  	import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
 </head>
 <body>
 <script>
@@ -326,7 +328,91 @@ body {
             <li><a href="https://example.com/contacto">Contacto</a></li>
         </ul>
     </nav>
+ <div class="main-content">
+        <h1>Bienvenidos a mi blog</h1>
 
+        <!-- Formulario para crear posts -->
+        <form id="postForm">
+            <input type="text" id="title" placeholder="Título del post" required />
+            <textarea id="content" placeholder="Contenido del post" required></textarea>
+            <button type="submit">Crear Post</button>
+        </form>
+
+        <div class="blog-grid" id="blogGrid"></div>
+    </div>
+
+    <script>
+        // Configuración de Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCxx1Oy3IVOzYPYggilV5okWyozPnw08QQ",
+    authDomain: "web-blog-e36f9.firebaseapp.com",
+    databaseURL: "https://web-blog-e36f9-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "web-blog-e36f9",
+    storageBucket: "web-blog-e36f9.firebasestorage.app",
+    messagingSenderId: "851452791419",
+    appId: "1:851452791419:web:6a748bcbad7bfeba4a30de",
+    measurementId: "G-F1WXKQPL6S"
+  };
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Función para cerrar sesión
+        function logout() {
+            localStorage.removeItem('authenticated');
+            window.location.href = "index.html";
+        }
+
+        // Función para crear un post
+        async function createPost(title, content) {
+            try {
+                await db.collection('posts').add({ title, content, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+                alert('Post creado exitosamente');
+                loadPosts(); // Actualizar la lista de posts
+            } catch (error) {
+                console.error("Error al crear el post:", error);
+            }
+        }
+
+        // Función para cargar posts desde Firestore
+        async function loadPosts() {
+            try {
+                const blogGrid = document.getElementById('blogGrid');
+                blogGrid.innerHTML = ""; // Limpiar posts anteriores
+
+                const querySnapshot = await db.collection('posts').orderBy('timestamp', 'desc').get();
+                querySnapshot.forEach((doc) => {
+                    const post = doc.data();
+                    const postElement = document.createElement('div');
+                    postElement.classList.add('blog-card');
+                    postElement.innerHTML = `
+                        <div class="blog-card-image">${post.title.charAt(0)}</div>
+                        <div class="blog-content">
+                            <h2>${post.title}</h2>
+                            <p>${post.content}</p>
+                        </div>
+                    `;
+                    blogGrid.appendChild(postElement);
+                });
+            } catch (error) {
+                console.error("Error al cargar los posts:", error);
+            }
+        }
+
+        // Manejar el envío del formulario para crear posts
+        document.getElementById('postForm').addEventListener('submit', (event) => {
+            event.preventDefault(); // Evitar recarga de la página
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+
+            if (title && content) {
+                createPost(title, content);
+                document.getElementById('postForm').reset(); // Limpiar formulario
+            }
+        });
+
+        // Cargar los posts al inicio
+        loadPosts();
+    </script>
 <script>
     // Seleccionar los elementos de la hamburguesa y el menú
     const hamburger = document.querySelector('.hamburger');
