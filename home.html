@@ -1,86 +1,459 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crear Entrada</title>
-  <!-- Importar Firebase y Firestore -->
-  <script type="module">
-    // Importar las funciones necesarias de Firebase SDK
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+<html><head><base href="." />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Blog</title>
+    <script>
+        // Verificar si el usuario está autenticado
+        const isAuthenticated = localStorage.getItem('authenticated');
+        if (!isAuthenticated) {
+            // Si no está autenticado, redirigir a la página de inicio de sesión
+            window.location.href = "index.html";
+        }
+    </script>
+<style>
 
-    // Configuración de Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyCxx1Oy3IVOzYPYggilV5okWyozPnw08QQ",
-      authDomain: "web-blog-e36f9.firebaseapp.com",
-      databaseURL: "https://web-blog-e36f9-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "web-blog-e36f9",
-      storageBucket: "web-blog-e36f9.firebasestorage.app",
-      messagingSenderId: "851452791419",
-      appId: "1:851452791419:web:6a748bcbad7bfeba4a30de",
-      measurementId: "G-F1WXKQPL6S"
-    };
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
 
-    // Inicializar Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const analytics = getAnalytics(app);
+body {
+    background-color: #f8f0ff;
+}
 
-    // Función para guardar la entrada en Firestore
-    async function saveEntry(title, body, date) {
-      try {
-        const docRef = await addDoc(collection(db, "entries"), {
-          title: title,
-          body: body,
-          date: date
-        });
-        alert("Entrada guardada con ID: " + docRef.id);
-      } catch (e) {
-        console.error("Error al agregar el documento: ", e);
-        alert("Error al guardar la entrada.");
-      }
+.header {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 15px rgba(106, 17, 203, 0.2);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+.login-btn {
+    background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+.hamburger {
+    width: 30px;
+    height: 25px;
+    position: relative;
+    cursor: pointer;
+}
+
+.hamburger span {
+    display: block;
+    position: absolute;
+    height: 3px;
+    width: 100%;
+    background: #ffffff;
+    border-radius: 3px;
+    transition: all 0.4s ease;
+}
+
+.hamburger span:nth-child(1) { top: 0px; }
+.hamburger span:nth-child(2) { top: 10px; }
+.hamburger span:nth-child(3) { top: 20px; }
+
+.hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+}
+
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+    transform: translateX(20px);
+}
+
+.hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+.menu {
+    position: fixed;
+    top: 70px;
+    left: -300px;
+    width: 300px;
+    height: calc(100vh - 70px);
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    transition: left 0.4s ease;
+    box-shadow: 2px 0 15px rgba(0,0,0,0.2);
+}
+
+.menu.active {
+    left: 0;
+}
+
+.menu ul {
+    list-style: none;
+    padding: 20px;
+}
+
+.menu ul li {
+    margin: 20px 0;
+    transform: translateX(-20px);
+    opacity: 0;
+    transition: all 0.4s ease;
+}
+
+.menu.active ul li {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.menu ul li:nth-child(1) { transition-delay: 0.1s; }
+.menu ul li:nth-child(2) { transition-delay: 0.2s; }
+.menu ul li:nth-child(3) { transition-delay: 0.3s; }
+.menu ul li:nth-child(4) { transition-delay: 0.4s; }
+.menu ul li:nth-child(5) { transition-delay: 0.5s; }
+
+.menu ul li a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1.2em;
+    transition: all 0.3s;
+    display: block;
+    padding: 10px 20px;
+    border-radius: 25px;
+}
+
+.menu ul li a:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateX(10px);
+}
+
+.login-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    z-index: 1001;
+    animation: modalPop 0.4s ease;
+}
+
+@keyframes modalPop {
+    from {
+        transform: translate(-50%, -60%);
+        opacity: 0;
     }
+    to {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+}
 
-    // Manejar el envío del formulario
-    document.getElementById("entryForm").addEventListener("submit", function(event) {
-      event.preventDefault();
-      
-      // Obtener los valores del formulario
-      const title = document.getElementById("title").value;
-      const body = document.getElementById("body").value;
-      const date = document.getElementById("date").value;
+.login-modal.active {
+    display: block;
+}
 
-      // Llamar a la función para guardar los datos en Firestore
-      saveEntry(title, body, date);
+.main-content {
+    margin-top: 100px;
+    padding: 40px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
 
-      // Limpiar el formulario después de enviar
-      document.getElementById("entryForm").reset();
-    });
-  </script>
+.main-content h1 {
+    color: #6a11cb;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-align: center;
+    animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.blog-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    animation: fadeIn 0.8s ease forwards;
+    opacity: 0;
+}
+
+.blog-card:hover {
+    transform: translateY(-10px);
+}
+
+.blog-card-image {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(45deg, #6a11cb, #2575fc);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 3em;
+}
+
+.blog-content {
+    padding: 20px;
+}
+
+.blog-content h2 {
+    color: #6a11cb;
+    margin-bottom: 10px;
+}
+
+.blog-content p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.read-more {
+    display: inline-block;
+    padding: 8px 20px;
+    background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+    color: white;
+    text-decoration: none;
+    border-radius: 20px;
+    transition: transform 0.3s ease;
+}
+
+.read-more:hover {
+    transform: translateX(5px);
+}
+
+.featured-post {
+    background: linear-gradient(135deg, #6a11cb20 0%, #2575fc20 100%);
+    padding: 30px;
+    border-radius: 15px;
+    margin: 40px 0;
+    animation: slideIn 0.8s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+.blog-card:nth-child(1) { animation-delay: 0.2s; }
+.blog-card:nth-child(2) { animation-delay: 0.4s; }
+.blog-card:nth-child(3) { animation-delay: 0.6s; }
+.blog-card:nth-child(4) { animation-delay: 0.8s; }
+
+.tags {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.tag {
+    background: #f0e7ff;
+    color: #6a11cb;
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-size: 0.9em;
+}
+</style>
+	import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+  	import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
 </head>
 <body>
-  <h1>Crear una nueva entrada</h1>
+<script>
+  		// Redirigir a index.html después del registro
+                //window.location.href = "/blog.github.io/index.html";
+</script>
 
-  <!-- Formulario para ingresar la entrada -->
-  <form id="entryForm">
-    <div>
-      <label for="title">Título:</label>
-      <input type="text" id="title" name="title" required />
+    <header class="header">
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+         <button class="login-btn" onclick="logout()">Logout</button>
+    </header>
+
+    <nav class="menu">
+        <ul>
+            <li><a href="https://example.com/inicio">Inicio</a></li>
+            <li><a href="https://example.com/articulos">Artículos</a></li>
+            <li><a href="https://example.com/categorias">Categorías</a></li>
+            <li><a href="https://example.com/sobre-mi">Sobre Mí</a></li>
+            <li><a href="https://example.com/contacto">Contacto</a></li>
+        </ul>
+    </nav>
+ <div class="main-content">
+        <h1>Bienvenidos a mi blog</h1>
+
+        <!-- Formulario para crear posts -->
+        <form id="postForm">
+            <input type="text" id="title" placeholder="Título del post" required />
+            <textarea id="content" placeholder="Contenido del post" required></textarea>
+            <button type="submit">Crear Post</button>
+        </form>
+
+        <div class="blog-grid" id="blogGrid"></div>
     </div>
-    
-    <div>
-      <label for="body">Cuerpo:</label>
-      <textarea id="body" name="body" rows="4" required></textarea>
+
+    <script>
+        // Configuración de Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCxx1Oy3IVOzYPYggilV5okWyozPnw08QQ",
+    authDomain: "web-blog-e36f9.firebaseapp.com",
+    databaseURL: "https://web-blog-e36f9-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "web-blog-e36f9",
+    storageBucket: "web-blog-e36f9.firebasestorage.app",
+    messagingSenderId: "851452791419",
+    appId: "1:851452791419:web:6a748bcbad7bfeba4a30de",
+    measurementId: "G-F1WXKQPL6S"
+  };
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Función para cerrar sesión
+        function logout() {
+            localStorage.removeItem('authenticated');
+            window.location.href = "index.html";
+        }
+
+        // Función para crear un post
+        async function createPost(title, content) {
+            try {
+                await db.collection('posts').add({ title, content, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+                alert('Post creado exitosamente');
+                loadPosts(); // Actualizar la lista de posts
+            } catch (error) {
+                console.error("Error al crear el post:", error);
+            }
+        }
+
+        // Función para cargar posts desde Firestore
+        async function loadPosts() {
+            try {
+                const blogGrid = document.getElementById('blogGrid');
+                blogGrid.innerHTML = ""; // Limpiar posts anteriores
+
+                const querySnapshot = await db.collection('posts').orderBy('timestamp', 'desc').get();
+                querySnapshot.forEach((doc) => {
+                    const post = doc.data();
+                    const postElement = document.createElement('div');
+                    postElement.classList.add('blog-card');
+                    postElement.innerHTML = `
+                        <div class="blog-card-image">${post.title.charAt(0)}</div>
+                        <div class="blog-content">
+                            <h2>${post.title}</h2>
+                            <p>${post.content}</p>
+                        </div>
+                    `;
+                    blogGrid.appendChild(postElement);
+                });
+            } catch (error) {
+                console.error("Error al cargar los posts:", error);
+            }
+        }
+
+        // Manejar el envío del formulario para crear posts
+        document.getElementById('postForm').addEventListener('submit', (event) => {
+            event.preventDefault(); // Evitar recarga de la página
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+
+            if (title && content) {
+                createPost(title, content);
+                document.getElementById('postForm').reset(); // Limpiar formulario
+            }
+        });
+
+        // Cargar los posts al inicio
+        loadPosts();
+    </script>
+<script>
+    // Seleccionar los elementos de la hamburguesa y el menú
+    const hamburger = document.querySelector('.hamburger');
+    const menu = document.querySelector('.menu');
+
+    // Añadir evento de clic a la hamburguesa
+    hamburger.addEventListener('click', () => {
+        // Alternar clases 'active' en la hamburguesa y el menú
+        hamburger.classList.toggle('active');
+        menu.classList.toggle('active');
+    });
+</script>
+
+    <div class="login-modal">
+        <h2>Inicia sesión</h2>
+        <input type="text" placeholder="Nombre de usuario" />
+        <input type="password" placeholder="Contraseña" />
+        <button>Acceder</button>
     </div>
-    
-    <div>
-      <label for="date">Fecha:</label>
-      <input type="date" id="date" name="date" required />
+
+    <div class="main-content">
+        <h1>Bienvenidos a mi blog</h1>
+        <div class="blog-grid">
+            <div class="blog-card">
+                <div class="blog-card-image">Post 1</div>
+                <div class="blog-content">
+                    <h2>Post de Ejemplo</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus luctus urna sed urna ultricies ac tempor dui sagittis.</p>
+                    <a href="#" class="read-more">Leer más</a>
+                </div>
+            </div>
+            
+        </div>
     </div>
-    
-    <button type="submit">Crear Entrada</button>
-  </form>
-</body>
-</html>
+<script>
+    // Función para cerrar sesión
+    function logout() {
+        // Eliminar el estado de autenticación
+        localStorage.removeItem('authenticated');
+        // Redirigir a la página de inicio de sesión
+        window.location.href = "index.html";
+    }
+</script>
+</body>g</html>
