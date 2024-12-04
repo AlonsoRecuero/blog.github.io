@@ -341,8 +341,10 @@ body {
         <div class="blog-grid" id="blogGrid"></div>
     </div>
 
-    <script>
-        // Configuración de Firebase
+
+
+<script>
+  // Inicializar Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyCxx1Oy3IVOzYPYggilV5okWyozPnw08QQ",
     authDomain: "web-blog-e36f9.firebaseapp.com",
@@ -353,66 +355,86 @@ body {
     appId: "1:851452791419:web:6a748bcbad7bfeba4a30de",
     measurementId: "G-F1WXKQPL6S"
   };
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
 
-        // Función para cerrar sesión
-        function logout() {
-            localStorage.removeItem('authenticated');
-            window.location.href = "index.html";
-        }
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-        // Función para crear un post
-        async function createPost(title, content) {
-            try {
-                await db.collection('posts').add({ title, content, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
-                alert('Post creado exitosamente');
-                loadPosts(); // Actualizar la lista de posts
-            } catch (error) {
-                console.error("Error al crear el post:", error);
-            }
-        }
+  // Función para cerrar sesión
+  function logout() {
+      localStorage.removeItem('authenticated');
+      window.location.href = "index.html";
+  }
 
-        // Función para cargar posts desde Firestore
-        async function loadPosts() {
-            try {
-                const blogGrid = document.getElementById('blogGrid');
-                blogGrid.innerHTML = ""; // Limpiar posts anteriores
+  // Función para crear un post
+  async function createPost(title, content) {
+      try {
+          await addDoc(collection(db, 'posts'), {
+              title,
+              content,
+              timestamp: serverTimestamp()
+          });
+          alert('Post creado exitosamente.');
+          loadPosts(); // Recargar los posts después de crear uno nuevo
+      } catch (error) {
+          console.error('Error al crear el post:', error);
+      }
+  }
 
-                const querySnapshot = await db.collection('posts').orderBy('timestamp', 'desc').get();
-                querySnapshot.forEach((doc) => {
-                    const post = doc.data();
-                    const postElement = document.createElement('div');
-                    postElement.classList.add('blog-card');
-                    postElement.innerHTML = `
-                        <div class="blog-card-image">${post.title.charAt(0)}</div>
-                        <div class="blog-content">
-                            <h2>${post.title}</h2>
-                            <p>${post.content}</p>
-                        </div>
-                    `;
-                    blogGrid.appendChild(postElement);
-                });
-            } catch (error) {
-                console.error("Error al cargar los posts:", error);
-            }
-        }
 
-        // Manejar el envío del formulario para crear posts
-        document.getElementById('postForm').addEventListener('submit', (event) => {
-            event.preventDefault(); // Evitar recarga de la página
-            const title = document.getElementById('title').value;
-            const content = document.getElementById('content').value;
 
-            if (title && content) {
-                createPost(title, content);
-                document.getElementById('postForm').reset(); // Limpiar formulario
-            }
-        });
 
-        // Cargar los posts al inicio
-        loadPosts();
-    </script>
+
+
+  // Función para cargar los posts
+  async function loadPosts() {
+      try {
+          const querySnapshot = await getDocs(collection(db, 'posts'));
+          const blogGrid = document.getElementById('blogGrid');
+          blogGrid.innerHTML = ''; // Limpiar el grid antes de cargar los posts
+
+          querySnapshot.forEach((doc) => {
+              const post = doc.data();
+              const blogCard = document.createElement('div');
+              blogCard.classList.add('blog-card');
+
+              blogCard.innerHTML = `
+                  <div class="blog-card-image">📖</div>
+                  <div class="blog-content">
+                      <h2>${post.title}</h2>
+                      <p>${post.content}</p>
+                      <span class="read-more">Publicado: ${post.timestamp?.toDate().toLocaleString()}</span>
+                  </div>
+              `;
+              blogGrid.appendChild(blogCard);
+          });
+      } catch (error) {
+          console.error('Error al cargar los posts:', error);
+      }
+  }
+
+  // Manejar el formulario de creación de posts
+  document.getElementById('postForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('title').value;
+      const content = document.getElementById('content').value;
+
+      if (title && content) {
+          createPost(title, content);
+          document.getElementById('postForm').reset();
+      } else {
+          alert('Por favor completa todos los campos.');
+      }
+  });
+
+  // Cargar los posts cuando la página se cargue
+  window.addEventListener('DOMContentLoaded', loadPosts);
+</script>
+
+
+
+
+
+
 <script>
     // Seleccionar los elementos de la hamburguesa y el menú
     const hamburger = document.querySelector('.hamburger');
